@@ -2,27 +2,31 @@ import type { MemorialProfile, Message } from '@/types/memorial';
 
 import { MemorialView } from '@/components/memorial/memorial-view';
 
-type MockMemorial = MemorialProfile & { messages: Message[] }
+type MockMemorial = MemorialProfile & { messages: Message[] };
 
 const MOCK_DATA: MockMemorial[] = [
   {
     id: '1',
     petName: '코코',
     deathDate: '2024-11-05',
-    imageUrl:
+    userImageUrl:
+      'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&h=200&fit=crop',
+    aiImageUrl:
       'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&h=200&fit=crop',
     isPublic: true,
     messages: [
       {
         id: 'm1',
         senderName: '김민지',
-        content: '코코야, 네가 곁에 있어서 정말 행복했어. 지금도 많이 보고 싶어.',
+        content:
+          '코코야, 네가 곁에 있어서 정말 행복했어. 지금도 많이 보고 싶어.',
         sentAt: '2025-03-12T14:23:00Z',
       },
       {
         id: 'm2',
         senderName: '이준호',
-        content: '무지개 다리 너머에서도 행복하게 지내길 바랄게. 항상 기억할게.',
+        content:
+          '무지개 다리 너머에서도 행복하게 지내길 바랄게. 항상 기억할게.',
         sentAt: '2025-02-28T09:05:00Z',
       },
       {
@@ -37,7 +41,9 @@ const MOCK_DATA: MockMemorial[] = [
     id: '2',
     petName: '몽이',
     deathDate: '2023-06-20',
-    imageUrl:
+    userImageUrl:
+      'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop',
+    aiImageUrl:
       'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop',
     isPublic: false,
     messages: [],
