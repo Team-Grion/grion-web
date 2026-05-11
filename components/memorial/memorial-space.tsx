@@ -16,9 +16,9 @@ interface MemorialSpaceProps {
   messages: Message[];
 }
 
-function formatDate(dateStr: string) {
-  const [year, month, day] = dateStr.split('-');
-  return `${year}년 ${Number(month)}월 ${Number(day)}일`;
+function formatDateRange(birthDate: string, deathDate: string) {
+  const fmt = (d: string) => d.replace(/-/g, '.');
+  return `${fmt(birthDate)} ~ ${fmt(deathDate)}`;
 }
 
 export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
@@ -48,7 +48,7 @@ export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
       </div>
       <h2 className="text-xl font-semibold">{memorial.petName}</h2>
       <p className="text-muted-foreground text-sm">
-        {formatDate(memorial.deathDate)}
+        {formatDateRange(memorial.birthDate, memorial.deathDate)}
       </p>
 
       <div className="mt-2 flex w-full max-w-sm items-center justify-between rounded-xl border px-4 py-3">

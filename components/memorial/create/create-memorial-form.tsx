@@ -15,6 +15,7 @@ export function CreateMemorialForm() {
   const router = useRouter();
 
   const [petName, setPetName] = useState('');
+  const [birthDate, setBirthDate] = useState('');
   const [deathDate, setDeathDate] = useState('');
   const [personalities, setPersonalities] = useState<string[]>([]);
   const [memory, setMemory] = useState('');
@@ -46,6 +47,19 @@ export function CreateMemorialForm() {
             placeholder="이름을 입력해주세요"
             value={petName}
             onChange={(e) => setPetName(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="birthDate">
+            생일 <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="birthDate"
+            type="date"
+            value={birthDate}
+            onChange={(e) => setBirthDate(e.target.value)}
             required
           />
         </div>
@@ -95,7 +109,7 @@ export function CreateMemorialForm() {
         <Button
           type="submit"
           className="w-full"
-          disabled={!petName || !deathDate || !previewUrl}
+          disabled={!petName || !birthDate || !deathDate || !previewUrl}
         >
           추모 공간 만들기
         </Button>

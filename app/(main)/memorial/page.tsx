@@ -8,6 +8,7 @@ const MOCK_DATA: MockMemorial[] = [
   {
     id: '1',
     petName: '코코',
+    birthDate: '2018-03-12',
     deathDate: '2024-11-05',
     userImageUrl:
       'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&h=200&fit=crop',
@@ -40,6 +41,7 @@ const MOCK_DATA: MockMemorial[] = [
   {
     id: '2',
     petName: '몽이',
+    birthDate: '2015-09-01',
     deathDate: '2023-06-20',
     userImageUrl:
       'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop',
