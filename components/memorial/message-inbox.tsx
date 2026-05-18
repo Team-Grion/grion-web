@@ -11,20 +11,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { formatSentAt } from "@/lib/utils"
 import type { Message } from "@/types/memorial"
 
 interface MessageInboxProps {
   messages: Message[]
-}
-
-function formatSentAt(iso: string) {
-  const date = new Date(iso)
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hour = date.getHours().toString().padStart(2, "0")
-  const min = date.getMinutes().toString().padStart(2, "0")
-  return `${year}.${month}.${day} ${hour}:${min}`
 }
 
 export function MessageInbox({ messages }: MessageInboxProps) {

@@ -1,5 +1,6 @@
 import Image from "next/image"
 
+import { formatDateRange } from "@/lib/utils"
 import type { MemorialProfile } from "@/types/memorial"
 
 import { SendMessageForm } from "@/components/public-memorial/send-message-form"
@@ -23,7 +24,7 @@ export function PublicMemorialDetail({ memorial, userName }: PublicMemorialDetai
         </div>
         <h1 className="text-xl font-semibold">{memorial.petName}</h1>
         <p className="text-muted-foreground text-sm">
-          {memorial.birthDate.replace(/-/g, ".")} ~ {memorial.deathDate.replace(/-/g, ".")}
+          {formatDateRange(memorial.birthDate, memorial.deathDate)}
         </p>
       </div>
 

@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
+import { formatDate } from "@/lib/utils"
 import type { MemorialProfile } from "@/types/memorial"
 
 interface MemorialGridCardProps {
@@ -21,7 +22,7 @@ export function MemorialGridCard({ memorial }: MemorialGridCardProps) {
       <div className="px-0.5">
         <p className="truncate text-xs font-medium">{memorial.petName}</p>
         <p className="text-muted-foreground text-xs">
-          {memorial.deathDate.replace(/-/g, ".")}
+          {formatDate(memorial.deathDate)}
         </p>
       </div>
     </Link>

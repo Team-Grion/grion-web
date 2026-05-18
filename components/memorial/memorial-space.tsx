@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { formatDateRange } from '@/lib/utils';
 import type { MemorialProfile, Message } from '@/types/memorial';
 
 import { Button } from '@/components/ui/button';
@@ -16,10 +17,6 @@ interface MemorialSpaceProps {
   messages: Message[];
 }
 
-function formatDateRange(birthDate: string, deathDate: string) {
-  const fmt = (d: string) => d.replace(/-/g, '.');
-  return `${fmt(birthDate)} ~ ${fmt(deathDate)}`;
-}
 
 export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
   const [isPublic, setIsPublic] = useState(memorial?.isPublic ?? false);
