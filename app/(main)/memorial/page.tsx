@@ -1,6 +1,6 @@
 import type { MemorialProfile, Message } from '@/types/memorial';
 
-import { MemorialView } from '@/components/memorial/memorial-view';
+import { MemorialView } from '@/app/(main)/memorial/_component/memorial-view';
 
 type MockMemorial = MemorialProfile & { messages: Message[] };
 

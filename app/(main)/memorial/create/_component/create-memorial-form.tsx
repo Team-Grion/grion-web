@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { CreateLoadingScreen } from '@/components/memorial/create/create-loading-screen';
-import { PersonalitySelector } from '@/components/memorial/create/personality-selector';
-import { PetPhotoInput } from '@/components/memorial/create/pet-photo-input';
+
+import { CreateLoadingScreen } from '@/app/(main)/memorial/create/_component/create-loading-screen';
+import { PersonalitySelector } from '@/app/(main)/memorial/create/_component/personality-selector';
+import { PetPhotoInput } from '@/app/(main)/memorial/create/_component/pet-photo-input';
 
 export function CreateMemorialForm() {
   const router = useRouter();

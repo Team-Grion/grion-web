@@ -1,16 +1,20 @@
-import Image from "next/image"
+import Image from 'next/image';
 
-import { formatDateRange } from "@/lib/utils"
-import type { MemorialProfile } from "@/types/memorial"
+import type { MemorialProfile } from '@/types/memorial';
 
-import { SendMessageForm } from "@/components/public-memorial/send-message-form"
+import { formatDateRange } from '@/lib/utils';
+
+import { SendMessageForm } from '@/app/(main)/public-memorial/_component/send-message-form';
 
 interface PublicMemorialDetailProps {
-  memorial: MemorialProfile
-  userName: string
+  memorial: MemorialProfile;
+  userName: string;
 }
 
-export function PublicMemorialDetail({ memorial, userName }: PublicMemorialDetailProps) {
+export function PublicMemorialDetail({
+  memorial,
+  userName,
+}: PublicMemorialDetailProps) {
   return (
     <div className="flex flex-col gap-6 px-6 py-6">
       <div className="flex flex-col items-center gap-3">
@@ -33,5 +37,5 @@ export function PublicMemorialDetail({ memorial, userName }: PublicMemorialDetai
         <SendMessageForm memorialId={memorial.id} userName={userName} />
       </div>
     </div>
-  )
+  );
 }

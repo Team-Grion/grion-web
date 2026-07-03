@@ -1,16 +1,20 @@
-import Image from "next/image"
-import Link from "next/link"
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { formatDate } from "@/lib/utils"
-import type { MemorialProfile } from "@/types/memorial"
+import type { MemorialProfile } from '@/types/memorial';
+
+import { formatDate } from '@/lib/utils';
 
 interface MemorialGridCardProps {
-  memorial: MemorialProfile
+  memorial: MemorialProfile;
 }
 
 export function MemorialGridCard({ memorial }: MemorialGridCardProps) {
   return (
-    <Link href={`/public-memorial/${memorial.id}`} className="flex flex-col gap-1">
+    <Link
+      href={`/public-memorial/${memorial.id}`}
+      className="flex flex-col gap-1"
+    >
       <div className="relative aspect-square w-full overflow-hidden rounded-lg">
         <Image
           src={memorial.aiImageUrl}
@@ -26,5 +30,5 @@ export function MemorialGridCard({ memorial }: MemorialGridCardProps) {
         </p>
       </div>
     </Link>
-  )
+  );
 }

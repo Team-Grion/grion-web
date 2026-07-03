@@ -1,6 +1,6 @@
-import { MOCK_PUBLIC_MEMORIALS } from "@/lib/mock-data"
+import { MOCK_PUBLIC_MEMORIALS } from '@/lib/mock-data';
 
-import { MemorialGrid } from "@/components/public-memorial/memorial-grid"
+import { MemorialGrid } from '@/app/(main)/public-memorial/_component/memorial-grid';
 
 export default function PublicMemorialPage() {
   return (
@@ -10,5 +10,5 @@ export default function PublicMemorialPage() {
       </div>
       <MemorialGrid memorials={MOCK_PUBLIC_MEMORIALS} />
     </div>
-  )
+  );
 }

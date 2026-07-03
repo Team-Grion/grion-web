@@ -4,19 +4,20 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { formatDateRange } from '@/lib/utils';
 import type { MemorialProfile, Message } from '@/types/memorial';
+
+import { formatDateRange } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { FlowerOverlay } from '@/components/memorial/flower-overlay';
-import { MessageInbox } from '@/components/memorial/message-inbox';
+
+import { FlowerOverlay } from '@/app/(main)/memorial/_component/flower-overlay';
+import { MessageInbox } from '@/app/(main)/memorial/_component/message-inbox';
 
 interface MemorialSpaceProps {
   memorial: MemorialProfile | null;
   messages: Message[];
 }
-
 
 export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
   const [isPublic, setIsPublic] = useState(memorial?.isPublic ?? false);
