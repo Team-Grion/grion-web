@@ -238,6 +238,127 @@ export function ExampleForm() {
 
 ---
 
+## 화면별 컴포넌트 목록 (시안 기준)
+
+### 온보딩 / 로그인 (`app/(auth)/`)
+
+**`onboarding/page.tsx`** — 첫 방문 온보딩 캐러셀 (신규 유저 진입점)
+
+| 컴포넌트 | 위치 | 설명 |
+|---------|------|------|
+| `onboarding-carousel.tsx` | `_component/` | 4슬라이드 스와이프 캐러셀 (터치 스와이프 + 좌우 화살표 + 도트 페이지네이션) |
+| `onboarding-slide.tsx` | `_component/` | 슬라이드 1장 (비주얼 이미지 + 제목 + 본문) |
+| `kakao-login-button.tsx` | `_component/` | 카카오 로그인 CTA 버튼 (노란 배경, 카카오 심볼) |
+
+슬라이드 4개:
+1. **intro** — "다시 만나는 작은 공간" / 그리온 로고 비주얼
+2. **ai** — "사진으로 다시 그려요" / 전후 사진 비교 비주얼
+3. **memorial** — "기억을 오래 간직해요" / 추모공간 비주얼
+4. **share** — "마음을 나눠요" / 공유 비주얼
+
+우상단 `건너뛰기` 버튼 → 마지막 슬라이드로 이동  
+하단 카카오 로그인 버튼은 모든 슬라이드에서 고정 노출  
+배경: `radial-gradient(ellipse at top, #FFF8EC 0%, #FAF7F1 60%)`
+
+**`login/page.tsx`** — 소셜 로그인 (카카오 단독)
+
+---
+
+### 공통 컴포넌트 (`components/`)
+
+| 컴포넌트 | 설명 |
+|---------|------|
+| `bottom-nav.tsx` | 하단 탭 네비게이션 (memorial / public-memorial / settings) |
+| `top-app-bar.tsx` | 상단 앱바 — brand 모드(로고) 단일 모드 |
+| `toast.tsx` | 바텀 토스트 알림 (성공/실패) — 쪽지 전송 후 노출 |
+
+---
+
+### memorial 페이지 (`app/(main)/memorial/`)
+
+**`page.tsx`** — 내 추모공간 메인
+
+| 컴포넌트 | 위치 | 설명 |
+|---------|------|------|
+| `pet-profile-bar.tsx` | `_component/` | 상단 아바타 스크롤 바 (반려동물 선택 + 추가 버튼) |
+| `memorial-space.tsx` | `_component/` | 히어로 이미지 + 이름/날짜 + 소개 카드 + 받은 쪽지 버튼 |
+| `flower-overlay.tsx` | `_component/` | 이미지 위에 국화꽃 오버레이 (쪽지 수 기반) |
+| `memorial-edit-card.tsx` | `_component/` | 한 줄 소개(epitaph) 편집 + 공개 설정 Switch (보기/수정 모드 전환) |
+| `message-inbox.tsx` | `_component/` | 받은 쪽지함 Sheet (메시지 목록) |
+
+**빈 상태** — 추모공간 없을 때 로고 + "공간 만들기" 버튼
+
+---
+
+**`create/page.tsx`** — 추모공간 생성
+
+| 컴포넌트 | 위치 | 설명 |
+|---------|------|------|
+| `create-memorial-form.tsx` | `create/_component/` | 전체 폼 컨테이너 |
+| `pet-photo-input.tsx` | `create/_component/` | 반려동물 사진 업로드 (원형 카메라 버튼) |
+| `personality-selector.tsx` | `create/_component/` | 성격 태그 다중 선택 (Toggle 칩) |
+| `create-loading-screen.tsx` | `create/_component/` | 제출 후 AI 생성 대기 화면 (PawTrailLoader 애니메이션) |
+| `waiting-letter-screen.tsx` | `create/_component/` | AI 생성 완료 후 편지 작성 화면 (생성 완료 배너 + textarea) |
+
+---
+
+### public-memorial 페이지 (`app/(main)/public-memorial/`)
+
+**`page.tsx`** — 공개 추모공간 목록
+
+| 컴포넌트 | 위치 | 설명 |
+|---------|------|------|
+| `public-memorial-header.tsx` | `_component/` | 오늘의 통계 ("오늘 N개 공간에 N송이 꽃이 놓였어요") |
+| `species-filter.tsx` | `_component/` | 종류 필터 칩 (전체 / 강아지 / 고양이) |
+| `memorial-grid.tsx` | `_component/` | 3열 그리드 레이아웃 |
+| `memorial-grid-card.tsx` | `_component/` | 그리드 카드 (이미지 + 이름 + 날짜) |
+
+**`[id]/page.tsx`** — 공개 추모공간 상세
+
+| 컴포넌트 | 위치 | 설명 |
+|---------|------|------|
+| `public-memorial-detail.tsx` | `_component/` | 히어로 이미지 + 이름/날짜/한 줄 소개 |
+| `send-message-form.tsx` | `_component/` | 쪽지 보내기 폼 (익명 체크박스 + textarea + 전송 버튼) |
+
+---
+
+### settings 페이지 (`app/(main)/settings/`)
+
+**`page.tsx`** — 설정
+
+| 컴포넌트 | 위치 | 설명 |
+|---------|------|------|
+| `profile-section.tsx` | `_component/` | 사용자 프로필 (아바타 + 이름 + 카카오 로그인 표시) |
+| `sent-message-list.tsx` | `_component/` | 내가 보낸 쪽지 목록 (toPetName + 내용 미리보기 + 날짜) |
+| `logout-section.tsx` | `_component/` | 로그아웃 버튼 + 확인 Dialog |
+
+---
+
+### 타입 추가 필요 (`types/memorial.ts`)
+
+현재 타입에서 시안 기준으로 추가 필요한 필드:
+
+```ts
+// MemorialProfile에 추가
+epitaph?: string;        // 한 줄 소개 (최대 40자)
+personalities?: string[]; // 성격 태그
+memory?: string;         // 함께한 추억
+
+// PublicMemorial (별도 타입)
+species: 'dog' | 'cat';
+flowers: number;         // 총 꽃 수
+recentFlowers: number;   // 오늘 꽃 수
+userPhotos?: string[];   // 사용자 업로드 사진들
+
+// SentMessage (설정 페이지용)
+toPetName: string;
+anonymous: boolean;
+preview: string;
+sentAt: string;
+```
+
+---
+
 ## API 연동 (참고용)
 
 - API는 `app/api/` 하위 `route.ts` 파일로 구성
