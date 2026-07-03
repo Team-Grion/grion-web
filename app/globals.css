@@ -5,6 +5,13 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Brand colors */
+  --color-cream: #faf9f5;
+  --color-peach: #ffefd5;
+  --color-tan: #d2b48c;
+  --color-warm-white: #faf7f1;
+  --color-brown: #5c4830;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
