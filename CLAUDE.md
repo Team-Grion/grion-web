@@ -93,6 +93,17 @@ export function Example({ ... }: ExampleProps) {
 - CSS 변수는 `globals.css`에 정의하고 Tailwind 토큰으로 연결해서 사용
 - `cn()` 유틸 활용 (조건부 클래스)
 
+### Tailwind 임의값(arbitrary value) 주의사항
+
+- **음수 0 클래스 금지** — `-ml-0` → `ml-0` (음수 0은 의미 없음)
+- **임의값 내 콤마 뒤 언더스코어 금지** — 언더스코어는 공백을 대체하는 용도. 콤마 바로 뒤는 공백이 아니므로 붙이지 않음
+  ```
+  // ❌
+  bg-[radial-gradient(ellipse_at_top,_#FFF8EC_0%,_#FAF7F1_60%)]
+  // ✅
+  bg-[radial-gradient(ellipse_at_top,#FFF8EC_0%,#FAF7F1_60%)]
+  ```
+
 ```tsx
 import { cn } from '@/lib/utils';
 
