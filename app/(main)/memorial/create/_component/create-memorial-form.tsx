@@ -3,118 +3,285 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
 import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-import { CreateLoadingScreen } from '@/app/(main)/memorial/create/_component/create-loading-screen';
+import { BackgroundSelector } from '@/app/(main)/memorial/create/_component/background-selector';
+import { BreedSelector } from '@/app/(main)/memorial/create/_component/breed-selector';
+import { DatePicker } from '@/app/(main)/memorial/create/_component/date-picker';
+import { MemoryPromptCarousel } from '@/app/(main)/memorial/create/_component/memory-prompt-carousel';
 import { PersonalitySelector } from '@/app/(main)/memorial/create/_component/personality-selector';
 import { PetPhotoInput } from '@/app/(main)/memorial/create/_component/pet-photo-input';
+import {
+  createMemorialSchema,
+  STEP1_FIELDS,
+  type CreateMemorialFormValues,
+} from '@/app/(main)/memorial/create/_component/schema';
+import { SpeciesSelector } from '@/app/(main)/memorial/create/_component/species-selector';
 
 export function CreateMemorialForm() {
   const router = useRouter();
+  const [step, setStep] = useState<1 | 2>(1);
 
-  const [petName, setPetName] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [deathDate, setDeathDate] = useState('');
-  const [personalities, setPersonalities] = useState<string[]>([]);
-  const [memory, setMemory] = useState('');
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const form = useForm<CreateMemorialFormValues>({
+    resolver: zodResolver(createMemorialSchema),
+    defaultValues: {
+      personalities: [],
+      bgId: undefined,
+      petName: '',
+      birthDate: '',
+      deathDate: '',
+      memory: '',
+    },
+  });
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 40000));
+  const birthDate = form.watch('birthDate');
+  const deathDate = form.watch('deathDate');
+  const memory = form.watch('memory') ?? '';
+
+  async function handleStep1Next() {
+    const valid = await form.trigger(
+      STEP1_FIELDS as unknown as (keyof CreateMemorialFormValues)[],
+    );
+    if (valid) setStep(2);
+  }
+
+  async function onSubmit(values: CreateMemorialFormValues) {
+    console.log(values);
     router.push('/memorial');
   }
 
-  if (isLoading) return <CreateLoadingScreen />;
-
   return (
-    <div className="px-6 py-8">
-      <h1 className="mb-6 text-xl font-semibold">추모 공간 만들기</h1>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-6 px-6 py-6 pb-28"
+      >
+        {step === 1 ? (
+          <>
+            <FormField
+              control={form.control}
+              name="petPhoto"
+              render={({ field, fieldState }) => (
+                <FormItem className="items-center">
+                  <PetPhotoInput
+                    value={field.value ?? null}
+                    onChange={field.onChange}
+                    error={fieldState.error?.message}
+                  />
+                </FormItem>
+              )}
+            />
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <PetPhotoInput previewUrl={previewUrl} onChange={setPreviewUrl} />
+            <FormField
+              control={form.control}
+              name="species"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>
+                    종 <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <SpeciesSelector
+                    value={field.value}
+                    onChange={(v) => {
+                      field.onChange(v);
+                      form.resetField('breed');
+                    }}
+                    error={fieldState.error?.message}
+                  />
+                </FormItem>
+              )}
+            />
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="petName">
-            반려동물 이름 <span className="text-destructive">*</span>
-          </Label>
-          <Input
-            id="petName"
-            placeholder="이름을 입력해주세요"
-            value={petName}
-            onChange={(e) => setPetName(e.target.value)}
-            required
-          />
-        </div>
+            <FormField
+              control={form.control}
+              name="breed"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>
+                    품종 <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <BreedSelector
+                    species={form.watch('species')}
+                    value={field.value ?? ''}
+                    onChange={field.onChange}
+                    error={fieldState.error?.message}
+                  />
+                </FormItem>
+              )}
+            />
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="birthDate">
-            생일 <span className="text-destructive">*</span>
-          </Label>
-          <Input
-            id="birthDate"
-            type="date"
-            value={birthDate}
-            onChange={(e) => setBirthDate(e.target.value)}
-            required
-          />
-        </div>
+            <FormField
+              control={form.control}
+              name="personalities"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    성격{' '}
+                    <span className="text-muted-foreground text-xs font-normal">
+                      (선택)
+                    </span>
+                  </FormLabel>
+                  <PersonalitySelector
+                    value={field.value ?? []}
+                    onChange={field.onChange}
+                  />
+                </FormItem>
+              )}
+            />
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="deathDate">
-            하늘나라 간 날짜 <span className="text-destructive">*</span>
-          </Label>
-          <Input
-            id="deathDate"
-            type="date"
-            value={deathDate}
-            onChange={(e) => setDeathDate(e.target.value)}
-            required
-          />
-        </div>
+            <FormField
+              control={form.control}
+              name="bgId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    원하는 배경{' '}
+                    <span className="text-muted-foreground text-xs font-normal">
+                      (선택)
+                    </span>
+                  </FormLabel>
+                  <BackgroundSelector
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormItem>
+              )}
+            />
 
-        <div className="flex flex-col gap-2">
-          <Label>
-            성격{' '}
-            <span className="text-muted-foreground text-xs font-normal">
-              (선택)
-            </span>
-          </Label>
-          <PersonalitySelector
-            selected={personalities}
-            onChange={setPersonalities}
-          />
-        </div>
+            <div className="fixed bottom-16 left-1/2 w-full max-w-150 -translate-x-1/2 px-6 pt-3 pb-4 backdrop-blur-sm">
+              <Button
+                type="button"
+                variant="brown"
+                className="w-full"
+                onClick={handleStep1Next}
+              >
+                다음
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <FormField
+              control={form.control}
+              name="petName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    반려동물 이름 <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <Input
+                    {...field}
+                    placeholder="이름을 입력해주세요"
+                    maxLength={20}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="memory">
-            함께한 추억{' '}
-            <span className="text-muted-foreground text-xs font-normal">
-              (선택)
-            </span>
-          </Label>
-          <Textarea
-            id="memory"
-            placeholder="소중한 추억을 적어주세요. AI가 더 특별한 이미지를 만들어줄 거예요."
-            value={memory}
-            onChange={(e) => setMemory(e.target.value)}
-            rows={4}
-          />
-        </div>
+            <FormField
+              control={form.control}
+              name="birthDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    태어난 날{' '}
+                    <span className="text-muted-foreground text-xs font-normal">
+                      (선택)
+                    </span>
+                  </FormLabel>
+                  <DatePicker
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="태어난 날 선택"
+                    disabled={
+                      deathDate ? { after: new Date(deathDate) } : undefined
+                    }
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={!petName || !birthDate || !deathDate || !previewUrl}
-        >
-          추모 공간 만들기
-        </Button>
+            <FormField
+              control={form.control}
+              name="deathDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    보낸 날{' '}
+                    <span className="text-muted-foreground text-xs font-normal">
+                      (선택)
+                    </span>
+                  </FormLabel>
+                  <DatePicker
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="보낸 날 선택"
+                    disabled={[
+                      ...(birthDate ? [{ before: new Date(birthDate) }] : []),
+                      { after: new Date() },
+                    ]}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="memory"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    함께한 추억{' '}
+                    <span className="text-muted-foreground text-xs font-normal">
+                      (선택)
+                    </span>
+                  </FormLabel>
+                  <MemoryPromptCarousel
+                    onSelect={(prompt) => {
+                      const current = field.value ?? '';
+                      field.onChange(
+                        current ? `${current}\n${prompt}` : prompt,
+                      );
+                    }}
+                  />
+                  <Textarea
+                    {...field}
+                    placeholder="소중한 추억을 적어주세요"
+                    rows={4}
+                    maxLength={1000}
+                    className="mt-2 resize-none"
+                  />
+                  <div className="text-muted-foreground flex justify-end text-xs">
+                    {memory.length} / 1000
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="fixed bottom-16 left-1/2 w-full max-w-150 -translate-x-1/2 px-6 pt-3 pb-4 backdrop-blur-sm">
+              <Button type="submit" variant="brown" className="w-full">
+                추모 공간 만들기
+              </Button>
+            </div>
+          </>
+        )}
       </form>
-    </div>
+    </Form>
   );
 }

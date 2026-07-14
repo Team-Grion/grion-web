@@ -26,6 +26,9 @@
 - Sheet, Dialog, Drawer 등 오버레이 컴포넌트 추가 시 **반드시 width 제한 적용**
   - Sheet 예시: `className="max-w-[600px] mx-auto"` 등 width 맞춰야 함
 - 하단 네비게이션 고려해 `pb-16` 확보
+- `fixed` 포지션 요소도 반드시 width 제한 적용 — bottom-nav와 동일한 패턴 사용
+  - `fixed bottom-16 left-1/2 w-full max-w-150 -translate-x-1/2` (바텀 nav 위에 배치 시)
+  - `fixed bottom-0 left-1/2 w-full max-w-150 -translate-x-1/2` (바텀 nav 위치에 배치 시)
 
 ---
 
@@ -92,6 +95,17 @@ export function Example({ ... }: ExampleProps) {
 - **Tailwind CSS className만 사용** — `style={}` 인라인 스타일 사용 금지
 - CSS 변수는 `globals.css`에 정의하고 Tailwind 토큰으로 연결해서 사용
 - `cn()` 유틸 활용 (조건부 클래스)
+
+### Tailwind 임의값(arbitrary value) 주의사항
+
+- **음수 0 클래스 금지** — `-ml-0` → `ml-0` (음수 0은 의미 없음)
+- **임의값 내 콤마 뒤 언더스코어 금지** — 언더스코어는 공백을 대체하는 용도. 콤마 바로 뒤는 공백이 아니므로 붙이지 않음
+  ```
+  // ❌
+  bg-[radial-gradient(ellipse_at_top,_#FFF8EC_0%,_#FAF7F1_60%)]
+  // ✅
+  bg-[radial-gradient(ellipse_at_top,#FFF8EC_0%,#FAF7F1_60%)]
+  ```
 
 ```tsx
 import { cn } from '@/lib/utils';
@@ -290,15 +304,74 @@ export function ExampleForm() {
 
 ---
 
-**`create/page.tsx`** — 추모공간 생성
+**`create/page.tsx`** — 추모공간 생성 (2단계 멀티스텝 폼)
+
+폼 상태: react-hook-form + zod, 단일 스키마로 2단계 관리  
+스키마 파일: `create/_component/schema.ts`
+
+#### Zod 스키마 명세
+
+```ts
+// STEP 1 필드
+petPhoto:      z.instanceof(File)              // 필수 — 반려동물 사진 (원형 업로드 버튼)
+species:       z.enum(['dog', 'cat'])          // 필수 — 종 (강아지 / 고양이) 버튼 토글
+breed:         z.string().min(1)               // 필수 — 품종 (species별 predefined SELECT + "기타" 선택 시 직접 입력 텍스트)
+personalities: z.array(z.string()).optional()  // 선택 — 성격 태그 칩 (predefined + 직접 입력)
+bgId:          z.string().optional()           // 선택 — 원하는 배경 (7종 이미지 카드 중 선택)
+
+// STEP 2 필드
+petName:   z.string().min(1).max(20)           // 필수 — 반려동물 이름 (최대 20자)
+birthDate: z.string().optional()              // 선택 — 태어난 날짜 날짜피커
+deathDate: z.string().optional()              // 선택 — 보낸 날 날짜피커
+memory:    z.string().max(1000).optional()    // 선택 — 함께한 추억 (최대 1000자 textarea)
+```
+
+크로스 필드 검증: 둘 다 입력된 경우에만 `birthDate < deathDate` — zod `.refine()`으로 처리  
+에러 메시지: "태어난 날은 보낸 날보다 이전이어야 해요"
+
+#### 날짜 피커 disable 규칙
+
+- **태어난 날짜** 피커: `deathDate`가 입력된 경우 그 날짜 이후 disable
+- **보낸 날** 피커: `birthDate`가 입력된 경우 그 날짜 이전 disable, 미래 날짜 항상 disable
+
+#### 품종 목록 (predefined)
+
+- **강아지**: 말티즈, 푸들, 시바견, 진돗개, 비숑 프리제, 포메라니안, 골든 리트리버, 닥스훈트, 믹스견, 기타
+- **고양이**: 코리안 숏헤어, 페르시안, 러시안 블루, 먼치킨, 스코티시폴드, 노르웨이숲, 샴, 뱅갈, 믹스묘, 기타
+- "기타" 선택 시 직접 입력 텍스트 필드 표시
+
+#### 배경 목록 (7종)
+
+`bgId` 값: `sky`, `flower-field`, `living-room`, `park`, `beach`, `sunny-window`, `snow-field`  
+라벨: 하늘, 꽃밭, 거실 소파, 공원, 바닷가, 햇살 창가, 눈밭  
+가로 스크롤 이미지 카드 형태, 선택 없이도 다음 가능
+
+**STEP 1** — 사진 + 종/품종 + 성격 + 배경
 
 | 컴포넌트 | 위치 | 설명 |
 |---------|------|------|
-| `create-memorial-form.tsx` | `create/_component/` | 전체 폼 컨테이너 |
+| `create-memorial-form.tsx` | `create/_component/` | 전체 폼 컨테이너 (스텝 상태 관리, 스텝 전환) |
 | `pet-photo-input.tsx` | `create/_component/` | 반려동물 사진 업로드 (원형 카메라 버튼) |
-| `personality-selector.tsx` | `create/_component/` | 성격 태그 다중 선택 (Toggle 칩) |
-| `create-loading-screen.tsx` | `create/_component/` | 제출 후 AI 생성 대기 화면 (PawTrailLoader 애니메이션) |
-| `waiting-letter-screen.tsx` | `create/_component/` | AI 생성 완료 후 편지 작성 화면 (생성 완료 배너 + textarea) |
+| `species-selector.tsx` | `create/_component/` | 종 선택 버튼 토글 (강아지 / 고양이만, 기타 없음) |
+| `breed-selector.tsx` | `create/_component/` | species 기반 shadcn Select + "기타" 선택 시 텍스트 Input 노출 |
+| `personality-selector.tsx` | `create/_component/` | 성격 태그 칩 다중 선택 + "직접 입력하기" 칩으로 커스텀 입력 |
+| `background-selector.tsx` | `create/_component/` | 7종 배경 이미지 카드 가로 스크롤 (선택 선택) |
+
+→ "다음" 버튼 클릭 시 Step 1 필드 validate → Step 2로 이동
+
+**STEP 2** — 상세 정보 입력
+
+| 컴포넌트 | 위치 | 설명 |
+|---------|------|------|
+| `memory-prompt-carousel.tsx` | `create/_component/` | 함께한 추억 예시 카드 자동 스크롤 캐러셀. 카드 클릭 시 memory 필드에 자동 입력 |
+
+입력 필드 순서:
+1. 반려동물 이름 (필수, max 20자)
+2. 태어난 날짜 (선택)
+3. 보낸 날 (선택) — 기존 "하늘나라 간 날짜"에서 명칭 변경
+4. 함께한 추억 (선택, max 500자) — 위에 예시 카드 캐러셀 표시
+
+> `create-loading-screen.tsx`는 플로우 변경으로 미사용 — 추후 정리 예정
 
 ---
 
