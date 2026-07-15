@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 
+import { cn } from '@/lib/utils';
+
 import { Button } from '@/components/ui/button';
 import {
   Field,
@@ -92,6 +94,22 @@ export function CreateMemorialForm() {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-6 px-6 py-6 pb-28"
     >
+      <div className="flex items-center gap-2">
+        <span
+          className={cn(
+            'h-1.5 rounded-full transition-all',
+            step === 1 ? 'bg-gr-primary w-8' : 'bg-gr-accent/40 w-4',
+          )}
+        />
+        <span
+          className={cn(
+            'h-1.5 rounded-full transition-all',
+            step === 2 ? 'bg-gr-primary w-8' : 'bg-gr-accent/40 w-4',
+          )}
+        />
+        <span className="text-muted-foreground ml-auto text-xs">{step}/2</span>
+      </div>
+
       {step === 1 ? (
         <>
           <FieldGroup>
@@ -234,66 +252,70 @@ export function CreateMemorialForm() {
               }}
             />
 
-            <Controller
-              control={control}
-              name="birthDate"
-              render={({ field, fieldState }) => {
-                const error = formState.isSubmitted
-                  ? fieldState.error
-                  : undefined;
-                return (
-                  <Field data-invalid={!!error}>
-                    <FieldLabel>
-                      태어난 날{' '}
-                      <span className="text-muted-foreground text-xs font-normal">
-                        (선택)
-                      </span>
-                    </FieldLabel>
-                    <DatePicker
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="태어난 날 선택"
-                      disabled={
-                        deathDate ? { after: new Date(deathDate) } : undefined
-                      }
-                      ariaInvalid={!!error}
-                    />
-                    <FieldError errors={[error]} />
-                  </Field>
-                );
-              }}
-            />
+            <div className="grid grid-cols-2 gap-3">
+              <Controller
+                control={control}
+                name="birthDate"
+                render={({ field, fieldState }) => {
+                  const error = formState.isSubmitted
+                    ? fieldState.error
+                    : undefined;
+                  return (
+                    <Field data-invalid={!!error}>
+                      <FieldLabel>
+                        태어난 날{' '}
+                        <span className="text-muted-foreground text-xs font-normal">
+                          (선택)
+                        </span>
+                      </FieldLabel>
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="태어난 날"
+                        disabled={
+                          deathDate ? { after: new Date(deathDate) } : undefined
+                        }
+                        ariaInvalid={!!error}
+                      />
+                      <FieldError errors={[error]} />
+                    </Field>
+                  );
+                }}
+              />
 
-            <Controller
-              control={control}
-              name="deathDate"
-              render={({ field, fieldState }) => {
-                const error = formState.isSubmitted
-                  ? fieldState.error
-                  : undefined;
-                return (
-                  <Field data-invalid={!!error}>
-                    <FieldLabel>
-                      보낸 날{' '}
-                      <span className="text-muted-foreground text-xs font-normal">
-                        (선택)
-                      </span>
-                    </FieldLabel>
-                    <DatePicker
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="보낸 날 선택"
-                      disabled={[
-                        ...(birthDate ? [{ before: new Date(birthDate) }] : []),
-                        { after: new Date() },
-                      ]}
-                      ariaInvalid={!!error}
-                    />
-                    <FieldError errors={[error]} />
-                  </Field>
-                );
-              }}
-            />
+              <Controller
+                control={control}
+                name="deathDate"
+                render={({ field, fieldState }) => {
+                  const error = formState.isSubmitted
+                    ? fieldState.error
+                    : undefined;
+                  return (
+                    <Field data-invalid={!!error}>
+                      <FieldLabel>
+                        보낸 날{' '}
+                        <span className="text-muted-foreground text-xs font-normal">
+                          (선택)
+                        </span>
+                      </FieldLabel>
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="보낸 날"
+                        disabled={[
+                          ...(birthDate
+                            ? [{ before: new Date(birthDate) }]
+                            : []),
+                          { after: new Date() },
+                        ]}
+                        ariaInvalid={!!error}
+                      />
+                      <FieldError errors={[error]} />
+                    </Field>
+                  );
+                }}
+              />
+            </div>
 
             <Controller
               control={control}
