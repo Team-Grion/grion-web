@@ -31,8 +31,8 @@ export function SpeciesSelector({
             className={cn(
               'flex flex-1 items-center justify-center gap-2 rounded-xl border py-3 text-sm font-medium transition-colors',
               value === option.value
-                ? 'border-brown bg-brown/8 text-brown'
-                : 'border-border text-muted-foreground hover:border-tan/60',
+                ? 'border-gr-primary bg-gr-primary/8 text-gr-primary'
+                : 'border-border text-muted-foreground hover:border-gr-accent/60',
             )}
           >
             <span>{option.emoji}</span>

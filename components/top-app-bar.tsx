@@ -27,7 +27,7 @@ export function TopAppBar({
             height={174}
             className="h-6.5 w-auto"
           />
-          <span className="text-brown text-base font-bold tracking-tight">
+          <span className="text-gr-primary text-base font-bold tracking-tight">
             그리온
           </span>
         </div>

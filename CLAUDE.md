@@ -121,17 +121,17 @@ import { cn } from '@/lib/utils';
 
 ## 컬러 시스템
 
-시안 기반 따뜻한 크림/브라운 팔레트. `globals.css`에 CSS 변수로 추가.
+시안 기반 따뜻한 크림/브라운 팔레트. `gr-` 접두어로 시맨틱 네이밍 — shadcn 자체 시맨틱 토큰(`--primary`, `--secondary` 등)과는 별도 네임스페이스라 서로 건드리지 않음. `globals.css`에 CSS 변수로 정의.
 
-| 토큰                 | Hex       | 용도               |
-| -------------------- | --------- | ------------------ |
-| `--color-cream`      | `#faf9f5` | 전체 배경          |
-| `--color-peach`      | `#FFEFD5` | 카드/섹션 배경     |
-| `--color-tan`        | `#D2B48C` | 포인트/보조        |
-| `--color-warm-white` | `#FAF7F1` | 컴포넌트 내부 배경 |
-| `--color-brown`      | `#5C4830` | 텍스트/주요 액션   |
+| 토큰                            | Hex       | 용도                        |
+| ------------------------------- | --------- | --------------------------- |
+| `--color-gr-background`         | `#FAF9F5` | 전체 배경                   |
+| `--color-gr-secondary`          | `#FFEFD5` | 카드/섹션 배경              |
+| `--color-gr-accent`             | `#D2B48C` | 포인트/hover 보더·배경      |
+| `--color-gr-primary-foreground` | `#FAF7F1` | primary 배경 위 텍스트      |
+| `--color-gr-primary`            | `#5C4830` | 주요 액션(버튼)/강조 텍스트 |
 
-Tailwind에서 `bg-cream`, `text-brown` 등으로 사용.
+Tailwind에서 `bg-gr-background`, `text-gr-primary` 등으로 사용.
 
 ---
 

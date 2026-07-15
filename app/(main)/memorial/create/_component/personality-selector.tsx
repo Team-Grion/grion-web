@@ -66,7 +66,7 @@ export function PersonalitySelector({
             size="sm"
             pressed={value.includes(option)}
             onPressedChange={() => toggle(option)}
-            className="aria-pressed:border-brown aria-pressed:bg-brown/8 aria-pressed:text-brown rounded-full px-3"
+            className="aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary rounded-full px-3"
           >
             {option}
           </Toggle>
@@ -81,7 +81,7 @@ export function PersonalitySelector({
               size="sm"
               pressed
               onPressedChange={() => toggle(custom)}
-              className="aria-pressed:border-brown aria-pressed:bg-brown/8 aria-pressed:text-brown rounded-full px-3"
+              className="aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary rounded-full px-3"
             >
               {custom}
             </Toggle>
@@ -93,8 +93,8 @@ export function PersonalitySelector({
           className={cn(
             'rounded-full border px-3 py-1 text-sm transition-colors',
             showCustomInput
-              ? 'border-brown bg-brown/8 text-brown'
-              : 'border-border text-muted-foreground hover:border-tan/60',
+              ? 'border-gr-primary bg-gr-primary/8 text-gr-primary'
+              : 'border-border text-muted-foreground hover:border-gr-accent/60',
           )}
         >
           {CUSTOM_TAG}
@@ -117,7 +117,7 @@ export function PersonalitySelector({
             type="button"
             onClick={addCustomTag}
             disabled={!customText.trim()}
-            className="bg-brown text-warm-white rounded-md px-3 py-1.5 text-sm disabled:opacity-40"
+            className="bg-gr-primary text-gr-primary-foreground rounded-md px-3 py-1.5 text-sm disabled:opacity-40"
           >
             추가
           </button>

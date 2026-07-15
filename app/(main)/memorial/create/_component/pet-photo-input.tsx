@@ -32,7 +32,7 @@ export function PetPhotoInput({ value, onChange, error }: PetPhotoInputProps) {
       <button
         type="button"
         onClick={() => fileInputRef.current?.click()}
-        className="border-muted-foreground/40 bg-muted hover:border-tan/60 relative flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-colors"
+        className="border-muted-foreground/40 bg-muted hover:border-gr-accent/60 relative flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-colors"
       >
         {previewUrl ? (
           <img
