@@ -252,66 +252,70 @@ export function CreateMemorialForm() {
               }}
             />
 
-            <Controller
-              control={control}
-              name="birthDate"
-              render={({ field, fieldState }) => {
-                const error = formState.isSubmitted
-                  ? fieldState.error
-                  : undefined;
-                return (
-                  <Field data-invalid={!!error}>
-                    <FieldLabel>
-                      태어난 날{' '}
-                      <span className="text-muted-foreground text-xs font-normal">
-                        (선택)
-                      </span>
-                    </FieldLabel>
-                    <DatePicker
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="태어난 날 선택"
-                      disabled={
-                        deathDate ? { after: new Date(deathDate) } : undefined
-                      }
-                      ariaInvalid={!!error}
-                    />
-                    <FieldError errors={[error]} />
-                  </Field>
-                );
-              }}
-            />
+            <div className="grid grid-cols-2 gap-3">
+              <Controller
+                control={control}
+                name="birthDate"
+                render={({ field, fieldState }) => {
+                  const error = formState.isSubmitted
+                    ? fieldState.error
+                    : undefined;
+                  return (
+                    <Field data-invalid={!!error}>
+                      <FieldLabel>
+                        태어난 날{' '}
+                        <span className="text-muted-foreground text-xs font-normal">
+                          (선택)
+                        </span>
+                      </FieldLabel>
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="태어난 날"
+                        disabled={
+                          deathDate ? { after: new Date(deathDate) } : undefined
+                        }
+                        ariaInvalid={!!error}
+                      />
+                      <FieldError errors={[error]} />
+                    </Field>
+                  );
+                }}
+              />
 
-            <Controller
-              control={control}
-              name="deathDate"
-              render={({ field, fieldState }) => {
-                const error = formState.isSubmitted
-                  ? fieldState.error
-                  : undefined;
-                return (
-                  <Field data-invalid={!!error}>
-                    <FieldLabel>
-                      보낸 날{' '}
-                      <span className="text-muted-foreground text-xs font-normal">
-                        (선택)
-                      </span>
-                    </FieldLabel>
-                    <DatePicker
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="보낸 날 선택"
-                      disabled={[
-                        ...(birthDate ? [{ before: new Date(birthDate) }] : []),
-                        { after: new Date() },
-                      ]}
-                      ariaInvalid={!!error}
-                    />
-                    <FieldError errors={[error]} />
-                  </Field>
-                );
-              }}
-            />
+              <Controller
+                control={control}
+                name="deathDate"
+                render={({ field, fieldState }) => {
+                  const error = formState.isSubmitted
+                    ? fieldState.error
+                    : undefined;
+                  return (
+                    <Field data-invalid={!!error}>
+                      <FieldLabel>
+                        보낸 날{' '}
+                        <span className="text-muted-foreground text-xs font-normal">
+                          (선택)
+                        </span>
+                      </FieldLabel>
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="보낸 날"
+                        disabled={[
+                          ...(birthDate
+                            ? [{ before: new Date(birthDate) }]
+                            : []),
+                          { after: new Date() },
+                        ]}
+                        ariaInvalid={!!error}
+                      />
+                      <FieldError errors={[error]} />
+                    </Field>
+                  );
+                }}
+              />
+            </div>
 
             <Controller
               control={control}
