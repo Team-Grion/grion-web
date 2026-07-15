@@ -4,16 +4,15 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -25,7 +24,7 @@ import { PersonalitySelector } from '@/app/(main)/memorial/create/_component/per
 import { PetPhotoInput } from '@/app/(main)/memorial/create/_component/pet-photo-input';
 import {
   createMemorialSchema,
-  STEP1_FIELDS,
+  step1Schema,
   type CreateMemorialFormValues,
 } from '@/app/(main)/memorial/create/_component/schema';
 import { SpeciesSelector } from '@/app/(main)/memorial/create/_component/species-selector';
@@ -33,8 +32,18 @@ import { SpeciesSelector } from '@/app/(main)/memorial/create/_component/species
 export function CreateMemorialForm() {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
+  const [step1Attempted, setStep1Attempted] = useState(false);
 
-  const form = useForm<CreateMemorialFormValues>({
+  const {
+    control,
+    handleSubmit,
+    resetField,
+    watch,
+    getValues,
+    setError,
+    clearErrors,
+    formState,
+  } = useForm<CreateMemorialFormValues>({
     resolver: zodResolver(createMemorialSchema),
     defaultValues: {
       personalities: [],
@@ -46,15 +55,31 @@ export function CreateMemorialForm() {
     },
   });
 
-  const birthDate = form.watch('birthDate');
-  const deathDate = form.watch('deathDate');
-  const memory = form.watch('memory') ?? '';
+  const species = watch('species');
+  const birthDate = watch('birthDate');
+  const deathDate = watch('deathDate');
+  const memory = watch('memory') ?? '';
 
-  async function handleStep1Next() {
-    const valid = await form.trigger(
-      STEP1_FIELDS as unknown as (keyof CreateMemorialFormValues)[],
+  function handleStep1Next() {
+    setStep1Attempted(true);
+    // zodResolver validates the whole schema, so trigger()/handleSubmit()
+    // would surface errors on untouched Step 2 fields (e.g. petName) before
+    // Step 2 is even visible. Validate Step 1 against its own sub-schema
+    // instead, which never looks at Step 2 fields.
+    clearErrors(
+      Object.keys(step1Schema.shape) as (keyof CreateMemorialFormValues)[],
     );
-    if (valid) setStep(2);
+    const result = step1Schema.safeParse(getValues());
+    if (!result.success) {
+      result.error.issues.forEach((issue) => {
+        setError(issue.path[0] as keyof CreateMemorialFormValues, {
+          type: issue.code,
+          message: issue.message,
+        });
+      });
+      return;
+    }
+    setStep(2);
   }
 
   async function onSubmit(values: CreateMemorialFormValues) {
@@ -63,225 +88,261 @@ export function CreateMemorialForm() {
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 px-6 py-6 pb-28"
-      >
-        {step === 1 ? (
-          <>
-            <FormField
-              control={form.control}
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col gap-6 px-6 py-6 pb-28"
+    >
+      {step === 1 ? (
+        <>
+          <FieldGroup>
+            <Controller
+              control={control}
               name="petPhoto"
-              render={({ field, fieldState }) => (
-                <FormItem className="items-center">
-                  <PetPhotoInput
-                    value={field.value ?? null}
-                    onChange={field.onChange}
-                    error={fieldState.error?.message}
-                  />
-                </FormItem>
-              )}
+              render={({ field, fieldState }) => {
+                const error = step1Attempted ? fieldState.error : undefined;
+                return (
+                  <Field data-invalid={!!error} className="items-center">
+                    <PetPhotoInput
+                      value={field.value ?? null}
+                      onChange={field.onChange}
+                      error={error?.message}
+                    />
+                  </Field>
+                );
+              }}
             />
 
-            <FormField
-              control={form.control}
+            <Controller
+              control={control}
               name="species"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>
-                    종 <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <SpeciesSelector
-                    value={field.value}
-                    onChange={(v) => {
-                      field.onChange(v);
-                      form.resetField('breed');
-                    }}
-                    error={fieldState.error?.message}
-                  />
-                </FormItem>
-              )}
+              render={({ field, fieldState }) => {
+                const error = step1Attempted ? fieldState.error : undefined;
+                return (
+                  <Field data-invalid={!!error}>
+                    <FieldLabel>
+                      종 <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <SpeciesSelector
+                      value={field.value}
+                      onChange={(v) => {
+                        field.onChange(v);
+                        resetField('breed');
+                      }}
+                      error={error?.message}
+                    />
+                  </Field>
+                );
+              }}
             />
 
-            <FormField
-              control={form.control}
+            <Controller
+              control={control}
               name="breed"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>
-                    품종 <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <BreedSelector
-                    species={form.watch('species')}
-                    value={field.value ?? ''}
-                    onChange={field.onChange}
-                    error={fieldState.error?.message}
-                  />
-                </FormItem>
-              )}
+              render={({ field, fieldState }) => {
+                const error = step1Attempted ? fieldState.error : undefined;
+                return (
+                  <Field data-invalid={!!error}>
+                    <FieldLabel>
+                      품종 <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <BreedSelector
+                      key={species ?? 'none'}
+                      species={species}
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      error={error?.message}
+                    />
+                  </Field>
+                );
+              }}
             />
 
-            <FormField
-              control={form.control}
+            <Controller
+              control={control}
               name="personalities"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
+                <Field>
+                  <FieldLabel>
                     성격{' '}
                     <span className="text-muted-foreground text-xs font-normal">
                       (선택)
                     </span>
-                  </FormLabel>
+                  </FieldLabel>
                   <PersonalitySelector
                     value={field.value ?? []}
                     onChange={field.onChange}
                   />
-                </FormItem>
+                </Field>
               )}
             />
 
-            <FormField
-              control={form.control}
+            <Controller
+              control={control}
               name="bgId"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
+                <Field>
+                  <FieldLabel>
                     원하는 배경{' '}
                     <span className="text-muted-foreground text-xs font-normal">
                       (선택)
                     </span>
-                  </FormLabel>
+                  </FieldLabel>
                   <BackgroundSelector
                     value={field.value}
                     onChange={field.onChange}
                   />
-                </FormItem>
+                </Field>
               )}
             />
+          </FieldGroup>
 
-            <div className="fixed bottom-16 left-1/2 w-full max-w-150 -translate-x-1/2 px-6 pt-3 pb-4 backdrop-blur-sm">
-              <Button
-                type="button"
-                variant="brown"
-                className="w-full"
-                onClick={handleStep1Next}
-              >
-                다음
-              </Button>
-            </div>
-          </>
-        ) : (
-          <>
-            <FormField
-              control={form.control}
+          <div className="fixed bottom-16 left-1/2 w-full max-w-150 -translate-x-1/2 px-6 pt-3 pb-4 backdrop-blur-sm">
+            <Button
+              type="button"
+              variant="brown"
+              className="w-full"
+              onClick={handleStep1Next}
+            >
+              다음
+            </Button>
+          </div>
+        </>
+      ) : (
+        <>
+          <FieldGroup>
+            <Controller
+              control={control}
               name="petName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    반려동물 이름 <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <Input
-                    {...field}
-                    placeholder="이름을 입력해주세요"
-                    maxLength={20}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field, fieldState }) => {
+                const error = formState.isSubmitted
+                  ? fieldState.error
+                  : undefined;
+                return (
+                  <Field data-invalid={!!error}>
+                    <FieldLabel>
+                      반려동물 이름 <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      placeholder="이름을 입력해주세요"
+                      maxLength={20}
+                      aria-invalid={!!error}
+                    />
+                    <FieldError errors={[error]} />
+                  </Field>
+                );
+              }}
             />
 
-            <FormField
-              control={form.control}
+            <Controller
+              control={control}
               name="birthDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    태어난 날{' '}
-                    <span className="text-muted-foreground text-xs font-normal">
-                      (선택)
-                    </span>
-                  </FormLabel>
-                  <DatePicker
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="태어난 날 선택"
-                    disabled={
-                      deathDate ? { after: new Date(deathDate) } : undefined
-                    }
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field, fieldState }) => {
+                const error = formState.isSubmitted
+                  ? fieldState.error
+                  : undefined;
+                return (
+                  <Field data-invalid={!!error}>
+                    <FieldLabel>
+                      태어난 날{' '}
+                      <span className="text-muted-foreground text-xs font-normal">
+                        (선택)
+                      </span>
+                    </FieldLabel>
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="태어난 날 선택"
+                      disabled={
+                        deathDate ? { after: new Date(deathDate) } : undefined
+                      }
+                      ariaInvalid={!!error}
+                    />
+                    <FieldError errors={[error]} />
+                  </Field>
+                );
+              }}
             />
 
-            <FormField
-              control={form.control}
+            <Controller
+              control={control}
               name="deathDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    보낸 날{' '}
-                    <span className="text-muted-foreground text-xs font-normal">
-                      (선택)
-                    </span>
-                  </FormLabel>
-                  <DatePicker
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="보낸 날 선택"
-                    disabled={[
-                      ...(birthDate ? [{ before: new Date(birthDate) }] : []),
-                      { after: new Date() },
-                    ]}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field, fieldState }) => {
+                const error = formState.isSubmitted
+                  ? fieldState.error
+                  : undefined;
+                return (
+                  <Field data-invalid={!!error}>
+                    <FieldLabel>
+                      보낸 날{' '}
+                      <span className="text-muted-foreground text-xs font-normal">
+                        (선택)
+                      </span>
+                    </FieldLabel>
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="보낸 날 선택"
+                      disabled={[
+                        ...(birthDate ? [{ before: new Date(birthDate) }] : []),
+                        { after: new Date() },
+                      ]}
+                      ariaInvalid={!!error}
+                    />
+                    <FieldError errors={[error]} />
+                  </Field>
+                );
+              }}
             />
 
-            <FormField
-              control={form.control}
+            <Controller
+              control={control}
               name="memory"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    함께한 추억{' '}
-                    <span className="text-muted-foreground text-xs font-normal">
-                      (선택)
-                    </span>
-                  </FormLabel>
-                  <MemoryPromptCarousel
-                    onSelect={(prompt) => {
-                      const current = field.value ?? '';
-                      field.onChange(
-                        current ? `${current}\n${prompt}` : prompt,
-                      );
-                    }}
-                  />
-                  <Textarea
-                    {...field}
-                    placeholder="소중한 추억을 적어주세요"
-                    rows={4}
-                    maxLength={1000}
-                    className="mt-2 resize-none"
-                  />
-                  <div className="text-muted-foreground flex justify-end text-xs">
-                    {memory.length} / 1000
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field, fieldState }) => {
+                const error = formState.isSubmitted
+                  ? fieldState.error
+                  : undefined;
+                return (
+                  <Field data-invalid={!!error}>
+                    <FieldLabel>
+                      함께한 추억{' '}
+                      <span className="text-muted-foreground text-xs font-normal">
+                        (선택)
+                      </span>
+                    </FieldLabel>
+                    <MemoryPromptCarousel
+                      onSelect={(prompt) => {
+                        const current = field.value ?? '';
+                        field.onChange(
+                          current ? `${current}\n${prompt}` : prompt,
+                        );
+                      }}
+                    />
+                    <Textarea
+                      {...field}
+                      placeholder="소중한 추억을 적어주세요"
+                      rows={4}
+                      maxLength={1000}
+                      className="mt-2 resize-none"
+                      aria-invalid={!!error}
+                    />
+                    <div className="text-muted-foreground flex justify-end text-xs">
+                      {memory.length} / 1000
+                    </div>
+                    <FieldError errors={[error]} />
+                  </Field>
+                );
+              }}
             />
+          </FieldGroup>
 
-            <div className="fixed bottom-16 left-1/2 w-full max-w-150 -translate-x-1/2 px-6 pt-3 pb-4 backdrop-blur-sm">
-              <Button type="submit" variant="brown" className="w-full">
-                추모 공간 만들기
-              </Button>
-            </div>
-          </>
-        )}
-      </form>
-    </Form>
+          <div className="fixed bottom-16 left-1/2 w-full max-w-150 -translate-x-1/2 px-6 pt-3 pb-4 backdrop-blur-sm">
+            <Button type="submit" variant="brown" className="w-full">
+              추모 공간 만들기
+            </Button>
+          </div>
+        </>
+      )}
+    </form>
   );
 }

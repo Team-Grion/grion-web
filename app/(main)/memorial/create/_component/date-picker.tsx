@@ -19,6 +19,7 @@ interface DatePickerProps {
   onChange: (value: string) => void;
   placeholder?: string;
   disabled?: Matcher | Matcher[];
+  ariaInvalid?: boolean;
 }
 
 export function DatePicker({
@@ -26,6 +27,7 @@ export function DatePicker({
   onChange,
   placeholder = '날짜 선택',
   disabled,
+  ariaInvalid,
 }: DatePickerProps) {
   const selected = value ? new Date(value) : undefined;
 
@@ -43,6 +45,7 @@ export function DatePicker({
         <Button
           type="button"
           variant="outline"
+          aria-invalid={ariaInvalid}
           className={cn(
             'w-full justify-start text-left font-normal',
             !selected && 'text-muted-foreground',

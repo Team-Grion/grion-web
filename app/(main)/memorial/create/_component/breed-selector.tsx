@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Input } from '@/components/ui/input';
 import {
@@ -16,6 +16,8 @@ import {
   DOG_BREEDS,
 } from '@/app/(main)/memorial/create/_component/schema';
 
+const CUSTOM_OPTION = '기타';
+
 interface BreedSelectorProps {
   species: 'dog' | 'cat' | undefined;
   value: string;
@@ -29,31 +31,21 @@ export function BreedSelector({
   onChange,
   error,
 }: BreedSelectorProps) {
-  const [selectValue, setSelectValue] = useState('');
-  const [customBreed, setCustomBreed] = useState('');
-
   const breeds =
     species === 'dog' ? DOG_BREEDS : species === 'cat' ? CAT_BREEDS : [];
+  const isPredefined = breeds.includes(value);
+  const [isCustom, setIsCustom] = useState(() => value !== '' && !isPredefined);
 
-  useEffect(() => {
-    setSelectValue('');
-    setCustomBreed('');
-    onChange('');
-  }, [species]);
+  const selectValue = isCustom ? CUSTOM_OPTION : isPredefined ? value : '';
 
   function handleSelectChange(selected: string) {
-    setSelectValue(selected);
-    if (selected !== '기타') {
-      onChange(selected);
-      setCustomBreed('');
-    } else {
+    if (selected === CUSTOM_OPTION) {
+      setIsCustom(true);
       onChange('');
+    } else {
+      setIsCustom(false);
+      onChange(selected);
     }
-  }
-
-  function handleCustomChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setCustomBreed(e.target.value);
-    onChange(e.target.value);
   }
 
   if (!species) {
@@ -69,9 +61,7 @@ export function BreedSelector({
   return (
     <div className="flex flex-col gap-1.5">
       <Select value={selectValue} onValueChange={handleSelectChange}>
-        <SelectTrigger
-          className={error && !selectValue ? 'border-destructive' : ''}
-        >
+        <SelectTrigger aria-invalid={!!error && !selectValue}>
           <SelectValue placeholder="품종을 선택해주세요" />
         </SelectTrigger>
         <SelectContent>
@@ -83,13 +73,13 @@ export function BreedSelector({
         </SelectContent>
       </Select>
 
-      {selectValue === '기타' && (
+      {isCustom && (
         <Input
           placeholder="품종을 직접 입력해주세요"
-          value={customBreed}
-          onChange={handleCustomChange}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           maxLength={30}
-          className={error && !customBreed ? 'border-destructive' : ''}
+          aria-invalid={!!error && !value}
           autoFocus
         />
       )}
