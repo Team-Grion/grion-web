@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 
+import { cn } from '@/lib/utils';
+
 import { Button } from '@/components/ui/button';
 import {
   Field,
@@ -92,6 +94,22 @@ export function CreateMemorialForm() {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-6 px-6 py-6 pb-28"
     >
+      <div className="flex items-center gap-2">
+        <span
+          className={cn(
+            'h-1.5 rounded-full transition-all',
+            step === 1 ? 'bg-gr-primary w-8' : 'bg-gr-accent/40 w-4',
+          )}
+        />
+        <span
+          className={cn(
+            'h-1.5 rounded-full transition-all',
+            step === 2 ? 'bg-gr-primary w-8' : 'bg-gr-accent/40 w-4',
+          )}
+        />
+        <span className="text-muted-foreground ml-auto text-xs">{step}/2</span>
+      </div>
+
       {step === 1 ? (
         <>
           <FieldGroup>

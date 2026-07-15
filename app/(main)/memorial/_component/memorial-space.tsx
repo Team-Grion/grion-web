@@ -25,9 +25,15 @@ export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
   if (!memorial) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 px-6 py-20 text-center">
-        <p className="text-muted-foreground">아직 추모 공간이 없어요</p>
-        <Button asChild variant="outline">
-          <Link href="/memorial/create">만들러 가기</Link>
+        <Image src="/logo.png" alt="" width={96} height={78} />
+        <div className="flex flex-col gap-1.5">
+          <h2 className="text-lg font-semibold">첫 추모 공간을 만들어보세요</h2>
+          <p className="text-muted-foreground text-sm">
+            사진 한 장으로 소중한 아이를 위한 공간을 남길 수 있어요
+          </p>
+        </div>
+        <Button asChild variant="brown">
+          <Link href="/memorial/create">추모 공간 만들기</Link>
         </Button>
       </div>
     );
@@ -49,17 +55,21 @@ export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
         {formatDateRange(memorial.birthDate, memorial.deathDate)}
       </p>
 
-      <div className="mt-2 flex w-full max-w-sm items-center justify-between rounded-xl border px-4 py-3">
-        <div>
-          <p className="text-sm font-medium">공개 추모 공간</p>
-          <p className="text-muted-foreground text-xs">
-            {isPublic ? '모두에게 공개된 상태예요' : '나만 볼 수 있는 상태예요'}
-          </p>
+      <div className="mt-2 flex w-full max-w-sm flex-col divide-y overflow-hidden rounded-xl border">
+        <div className="flex items-center justify-between px-4 py-3">
+          <div>
+            <p className="text-sm font-medium">공개 추모 공간</p>
+            <p className="text-muted-foreground text-xs">
+              {isPublic
+                ? '모두에게 공개된 상태예요'
+                : '나만 볼 수 있는 상태예요'}
+            </p>
+          </div>
+          <Switch checked={isPublic} onCheckedChange={setIsPublic} />
         </div>
-        <Switch checked={isPublic} onCheckedChange={setIsPublic} />
-      </div>
 
-      <MessageInbox messages={messages} />
+        <MessageInbox messages={messages} />
+      </div>
     </div>
   );
 }
