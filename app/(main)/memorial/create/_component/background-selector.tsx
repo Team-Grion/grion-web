@@ -32,18 +32,20 @@ export function BackgroundSelector({
               className={cn(
                 'h-20 w-16 overflow-hidden rounded-xl border-2 transition-all',
                 isSelected
-                  ? 'border-brown shadow-brown/20 shadow-sm'
+                  ? 'border-gr-primary shadow-gr-primary/20 shadow-sm'
                   : 'border-transparent',
               )}
             >
-              <div className="bg-peach/60 flex size-full items-center justify-center text-2xl">
+              <div className="bg-gr-secondary/60 flex size-full items-center justify-center text-2xl">
                 {BG_EMOJI[bg.id]}
               </div>
             </div>
             <span
               className={cn(
                 'text-xs',
-                isSelected ? 'text-brown font-medium' : 'text-muted-foreground',
+                isSelected
+                  ? 'text-gr-primary font-medium'
+                  : 'text-muted-foreground',
               )}
             >
               {bg.label}

@@ -1,37 +1,37 @@
 import { z } from 'zod';
 
-export const createMemorialSchema = z
-  .object({
-    // Step 1
-    petPhoto: z.instanceof(File, { message: '사진을 등록해주세요' }),
-    species: z.enum(['dog', 'cat'], { message: '종을 선택해주세요' }),
-    breed: z.string().min(1, '품종을 선택해주세요'),
-    personalities: z.array(z.string()).optional(),
-    bgId: z.string().optional(),
-    // Step 2
-    petName: z
-      .string()
-      .min(1, '이름을 입력해주세요')
-      .max(20, '이름은 최대 20자까지 입력할 수 있어요'),
-    birthDate: z.string().optional(),
-    deathDate: z.string().optional(),
-    memory: z
-      .string()
-      .max(1000, '추억은 최대 1000자까지 입력할 수 있어요')
-      .optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.birthDate && data.deathDate) {
-        return new Date(data.birthDate) < new Date(data.deathDate);
-      }
-      return true;
-    },
-    {
-      message: '태어난 날은 보낸 날보다 이전이어야 해요',
-      path: ['birthDate'],
-    },
-  );
+const memorialShape = z.object({
+  // Step 1
+  petPhoto: z.instanceof(File, { message: '사진을 등록해주세요' }),
+  species: z.enum(['dog', 'cat'], { message: '종을 선택해주세요' }),
+  breed: z.string().min(1, '품종을 선택해주세요'),
+  personalities: z.array(z.string()).optional(),
+  bgId: z.string().optional(),
+  // Step 2
+  petName: z
+    .string()
+    .min(1, '이름을 입력해주세요')
+    .max(20, '이름은 최대 20자까지 입력할 수 있어요'),
+  birthDate: z.string().optional(),
+  deathDate: z.string().optional(),
+  memory: z
+    .string()
+    .max(1000, '추억은 최대 1000자까지 입력할 수 있어요')
+    .optional(),
+});
+
+export const createMemorialSchema = memorialShape.refine(
+  (data) => {
+    if (data.birthDate && data.deathDate) {
+      return new Date(data.birthDate) < new Date(data.deathDate);
+    }
+    return true;
+  },
+  {
+    message: '태어난 날은 보낸 날보다 이전이어야 해요',
+    path: ['birthDate'],
+  },
+);
 
 export type CreateMemorialFormValues = z.infer<typeof createMemorialSchema>;
 
@@ -42,6 +42,25 @@ export const STEP1_FIELDS = [
   'personalities',
   'bgId',
 ] as const;
+
+export const STEP2_FIELDS = [
+  'petName',
+  'birthDate',
+  'deathDate',
+  'memory',
+] as const;
+
+// zodResolver validates the whole schema on every trigger()/handleSubmit()
+// call, so Step 1's "다음" gate uses this narrower schema instead — otherwise
+// untouched Step 2 fields (e.g. petName) would show errors before Step 2 is
+// even visible.
+export const step1Schema = memorialShape.pick({
+  petPhoto: true,
+  species: true,
+  breed: true,
+  personalities: true,
+  bgId: true,
+});
 
 export const DOG_BREEDS = [
   '말티즈',

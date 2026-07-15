@@ -67,11 +67,11 @@ export function OnboardingCarousel() {
         </CarouselContent>
         <CarouselPrevious
           variant="ghost"
-          className="left-2 border-0 text-foreground/25 hover:text-foreground/40 hover:bg-transparent"
+          className="text-foreground/25 hover:text-foreground/40 left-2 border-0 hover:bg-transparent"
         />
         <CarouselNext
           variant="ghost"
-          className="right-2 border-0 text-foreground/25 hover:text-foreground/40 hover:bg-transparent"
+          className="text-foreground/25 hover:text-foreground/40 right-2 border-0 hover:bg-transparent"
         />
       </Carousel>
 
@@ -83,7 +83,7 @@ export function OnboardingCarousel() {
             aria-label={`${i + 1}번째 슬라이드`}
             className={cn(
               'h-1.5 rounded-full transition-all duration-300',
-              i === current ? 'bg-brown w-5' : 'bg-tan/40 w-1.5',
+              i === current ? 'bg-gr-primary w-5' : 'bg-gr-accent/40 w-1.5',
             )}
           />
         ))}
