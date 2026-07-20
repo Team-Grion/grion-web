@@ -6,6 +6,7 @@ import { auth } from '@/lib/auth/auth';
 import { Toaster } from '@/components/ui/sonner';
 import { AppTopBar } from '@/components/app-top-bar';
 import { BottomNav } from '@/components/bottom-nav';
+import { LeaveConfirmProvider } from '@/components/leave-confirm-provider';
 
 export default async function MainLayout({
   children,
@@ -18,9 +19,11 @@ export default async function MainLayout({
 
   return (
     <div className="relative flex min-h-dvh flex-col">
-      <AppTopBar />
-      <main className="flex-1 pb-16">{children}</main>
-      <BottomNav />
+      <LeaveConfirmProvider>
+        <AppTopBar />
+        <main className="flex-1 pb-16">{children}</main>
+        <BottomNav />
+      </LeaveConfirmProvider>
       <Toaster position="bottom-center" offset={80} />
     </div>
   );

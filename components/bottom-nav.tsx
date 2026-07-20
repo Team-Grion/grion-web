@@ -7,6 +7,8 @@ import { Flower2, Globe, Settings } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
+import { useLeaveConfirm } from '@/components/leave-confirm-provider';
+
 const navItems = [
   // { href: '/dashboard', label: '홈', icon: Home },
   { href: '/memorial', label: '내 추모공간', icon: Flower2 },
@@ -16,6 +18,7 @@ const navItems = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { createGuardedClickHandler } = useLeaveConfirm();
 
   return (
     <nav className="bg-background fixed bottom-0 left-1/2 w-full max-w-150 -translate-x-1/2 border-t">
@@ -26,6 +29,7 @@ export function BottomNav() {
             <Link
               key={href}
               href={href}
+              onClick={createGuardedClickHandler(href)}
               className={cn(
                 'flex flex-col items-center gap-1 px-3 py-1 text-xs font-medium transition-colors',
                 isActive
