@@ -33,9 +33,10 @@ export default async function SettingsPage() {
       <ProfileSection
         name={session?.user.name ?? '사용자'}
         imageUrl={session?.user.image}
-      />
+      >
+        <LogoutSection />
+      </ProfileSection>
       <SentMessageList messages={MOCK_SENT_MESSAGES} />
-      <LogoutSection />
     </div>
   );
 }
