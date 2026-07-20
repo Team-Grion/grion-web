@@ -7,6 +7,7 @@ interface TopAppBarProps {
   mode?: 'brand' | 'back';
   title?: string;
   backHref?: string;
+  onBackClick?: () => void;
   right?: React.ReactNode;
 }
 
@@ -14,6 +15,7 @@ export function TopAppBar({
   mode = 'brand',
   title,
   backHref,
+  onBackClick,
   right,
 }: TopAppBarProps) {
   return (
@@ -33,14 +35,25 @@ export function TopAppBar({
         </div>
       ) : (
         <>
-          {backHref && (
-            <Link
-              href={backHref}
+          {onBackClick ? (
+            <button
+              type="button"
+              onClick={onBackClick}
               aria-label="뒤로"
               className="text-foreground -ml-1 flex items-center p-1"
             >
               <ChevronLeft className="size-5.5" strokeWidth={2} />
-            </Link>
+            </button>
+          ) : (
+            backHref && (
+              <Link
+                href={backHref}
+                aria-label="뒤로"
+                className="text-foreground -ml-1 flex items-center p-1"
+              >
+                <ChevronLeft className="size-5.5" strokeWidth={2} />
+              </Link>
+            )
           )}
           <span className="min-w-0 flex-1 truncate text-[15.5px] font-semibold tracking-tight">
             {title}
