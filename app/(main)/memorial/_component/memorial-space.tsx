@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { toast } from 'sonner';
+
 import type { MemorialProfile, Message } from '@/types/memorial';
 
 import { formatDateRange } from '@/lib/utils';
@@ -11,6 +13,7 @@ import { formatDateRange } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 
+import { EpitaphPlaque } from '@/app/(main)/memorial/_component/epitaph-plaque';
 import { FlowerOverlay } from '@/app/(main)/memorial/_component/flower-overlay';
 import { MessageInbox } from '@/app/(main)/memorial/_component/message-inbox';
 
@@ -21,6 +24,16 @@ interface MemorialSpaceProps {
 
 export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
   const [isPublic, setIsPublic] = useState(memorial?.isPublic ?? false);
+  const [epitaph, setEpitaph] = useState(memorial?.epitaph ?? '');
+
+  function handlePublicChange(next: boolean) {
+    setIsPublic(next);
+    if (next && !epitaph) {
+      toast('공개로 전환됐어요', {
+        description: '한 줄 소개를 남겨보시겠어요?',
+      });
+    }
+  }
 
   if (!memorial) {
     return (
@@ -55,17 +68,25 @@ export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
         {formatDateRange(memorial.birthDate, memorial.deathDate)}
       </p>
 
+      <EpitaphPlaque
+        value={epitaph}
+        onChange={setEpitaph}
+        isPublic={isPublic}
+      />
+
       <div className="mt-2 flex w-full max-w-sm flex-col divide-y overflow-hidden rounded-xl border">
         <div className="flex items-center justify-between px-4 py-3">
           <div>
-            <p className="text-sm font-medium">공개 추모 공간</p>
+            <p className="text-sm font-medium">
+              {isPublic ? '공개 추모 공간' : '비공개 추모 공간'}
+            </p>
             <p className="text-muted-foreground text-xs">
               {isPublic
                 ? '모두에게 공개된 상태예요'
                 : '나만 볼 수 있는 상태예요'}
             </p>
           </div>
-          <Switch checked={isPublic} onCheckedChange={setIsPublic} />
+          <Switch checked={isPublic} onCheckedChange={handlePublicChange} />
         </div>
 
         <MessageInbox messages={messages} />

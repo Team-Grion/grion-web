@@ -12,6 +12,10 @@ const memorialShape = z.object({
     .string()
     .min(1, '이름을 입력해주세요')
     .max(20, '이름은 최대 20자까지 입력할 수 있어요'),
+  epitaph: z
+    .string()
+    .max(40, '한 줄 소개는 최대 40자까지 입력할 수 있어요')
+    .optional(),
   birthDate: z.string().optional(),
   deathDate: z.string().optional(),
   memory: z
@@ -47,6 +51,7 @@ export const STEP2_FIELDS = [
   'petName',
   'birthDate',
   'deathDate',
+  'epitaph',
   'memory',
 ] as const;
 
