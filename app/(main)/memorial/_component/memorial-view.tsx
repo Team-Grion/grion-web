@@ -23,11 +23,13 @@ export function MemorialView({ memorials, messages }: MemorialViewProps) {
 
   return (
     <div>
-      <PetProfileBar
-        memorials={memorials}
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-      />
+      {memorials && memorials.length > 0 && (
+        <PetProfileBar
+          memorials={memorials}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+        />
+      )}
       <MemorialSpace
         key={selectedId}
         memorial={selectedMemorial}
