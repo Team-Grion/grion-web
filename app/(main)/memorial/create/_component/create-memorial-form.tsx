@@ -51,6 +51,7 @@ export function CreateMemorialForm() {
       personalities: [],
       bgId: undefined,
       petName: '',
+      epitaph: '',
       birthDate: '',
       deathDate: '',
       memory: '',
@@ -316,6 +317,33 @@ export function CreateMemorialForm() {
                 }}
               />
             </div>
+
+            <Controller
+              control={control}
+              name="epitaph"
+              render={({ field, fieldState }) => {
+                const error = formState.isSubmitted
+                  ? fieldState.error
+                  : undefined;
+                return (
+                  <Field data-invalid={!!error}>
+                    <FieldLabel>
+                      한 줄 소개{' '}
+                      <span className="text-muted-foreground text-xs font-normal">
+                        (선택)
+                      </span>
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      placeholder="공개 추모 공간에 표시될 한 줄 소개예요"
+                      maxLength={40}
+                      aria-invalid={!!error}
+                    />
+                    <FieldError errors={[error]} />
+                  </Field>
+                );
+              }}
+            />
 
             <Controller
               control={control}

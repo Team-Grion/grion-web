@@ -7,6 +7,7 @@ interface TopAppBarProps {
   mode?: 'brand' | 'back';
   title?: string;
   backHref?: string;
+  onBackClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   right?: React.ReactNode;
 }
 
@@ -14,6 +15,7 @@ export function TopAppBar({
   mode = 'brand',
   title,
   backHref,
+  onBackClick,
   right,
 }: TopAppBarProps) {
   return (
@@ -36,6 +38,7 @@ export function TopAppBar({
           {backHref && (
             <Link
               href={backHref}
+              onClick={onBackClick}
               aria-label="뒤로"
               className="text-foreground -ml-1 flex items-center p-1"
             >

@@ -15,6 +15,8 @@ const MOCK_DATA: MockMemorial[] = [
     aiImageUrl:
       'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&h=200&fit=crop',
     isPublic: true,
+    epitaph:
+      '매일 아침 곁에서 나를 깨워주던 너의 온기가 아직도 생생하게 느껴져요..',
     messages: [
       {
         id: 'm1',

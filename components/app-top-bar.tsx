@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 
+import { useLeaveConfirm } from '@/components/leave-confirm-provider';
 import { TopAppBar } from '@/components/top-app-bar';
 
 const BACK_ROUTES: Record<string, { backHref: string; title: string }> = {
@@ -10,14 +11,16 @@ const BACK_ROUTES: Record<string, { backHref: string; title: string }> = {
 
 export function AppTopBar() {
   const pathname = usePathname();
+  const { createGuardedClickHandler } = useLeaveConfirm();
   const backRoute = BACK_ROUTES[pathname];
 
   if (backRoute) {
     return (
       <TopAppBar
         mode="back"
-        backHref={backRoute.backHref}
         title={backRoute.title}
+        backHref={backRoute.backHref}
+        onBackClick={createGuardedClickHandler(backRoute.backHref)}
       />
     );
   }
