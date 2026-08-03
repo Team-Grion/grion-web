@@ -34,7 +34,7 @@ export function PetProfileBar({
             <Avatar
               className={cn(
                 'size-16 transition-all',
-                isSelected && 'ring-primary ring-2 ring-offset-2',
+                isSelected && 'ring-gr-primary ring-2 ring-offset-2',
               )}
             >
               <AvatarImage src={memorial.userImageUrl} alt={memorial.petName} />
@@ -46,7 +46,7 @@ export function PetProfileBar({
               className={cn(
                 'text-xs transition-colors',
                 isSelected
-                  ? 'text-primary font-medium'
+                  ? 'text-gr-primary font-medium'
                   : 'text-muted-foreground',
               )}
             >
