@@ -1,13 +1,14 @@
 import Image from 'next/image';
 
-import type { MemorialProfile } from '@/types/memorial';
+import type { PublicMemorial } from '@/types/memorial';
 
 import { formatDateRange } from '@/lib/utils';
 
+import { FlowerOverlay } from '@/app/(main)/memorial/_component/flower-overlay';
 import { SendMessageForm } from '@/app/(main)/public-memorial/_component/send-message-form';
 
 interface PublicMemorialDetailProps {
-  memorial: MemorialProfile;
+  memorial: PublicMemorial;
   userName: string;
 }
 
@@ -25,11 +26,17 @@ export function PublicMemorialDetail({
             fill
             className="object-cover"
           />
+          <FlowerOverlay count={memorial.flowers} />
         </div>
         <h1 className="text-xl font-semibold">{memorial.petName}</h1>
         <p className="text-muted-foreground text-sm">
           {formatDateRange(memorial.birthDate, memorial.deathDate)}
         </p>
+        {memorial.epitaph && (
+          <p className="text-foreground text-center text-sm">
+            {memorial.epitaph}
+          </p>
+        )}
       </div>
 
       <div className="border-t pt-6">

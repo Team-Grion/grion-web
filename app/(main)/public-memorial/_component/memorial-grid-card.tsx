@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import type { MemorialProfile } from '@/types/memorial';
+import type { PublicMemorial } from '@/types/memorial';
 
 import { formatDate } from '@/lib/utils';
 
 interface MemorialGridCardProps {
-  memorial: MemorialProfile;
+  memorial: PublicMemorial;
 }
 
 export function MemorialGridCard({ memorial }: MemorialGridCardProps) {
