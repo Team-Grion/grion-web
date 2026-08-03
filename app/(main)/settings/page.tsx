@@ -1,8 +1,4 @@
-import { headers } from 'next/headers';
-
 import type { SentMessage } from '@/types/memorial';
-
-import { auth } from '@/lib/auth/auth';
 
 import { LogoutSection } from '@/app/(main)/settings/_component/logout-section';
 import { ProfileSection } from '@/app/(main)/settings/_component/profile-section';
@@ -25,15 +21,11 @@ const MOCK_SENT_MESSAGES: SentMessage[] = [
   },
 ];
 
-export default async function SettingsPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
-
+export default function SettingsPage() {
+  // TODO: 백엔드 연동 시 사용자 정보 API로 이름·프로필 이미지 채우기
   return (
     <div className="flex flex-col divide-y">
-      <ProfileSection
-        name={session?.user.name ?? '사용자'}
-        imageUrl={session?.user.image}
-      >
+      <ProfileSection name="사용자">
         <LogoutSection />
       </ProfileSection>
       <SentMessageList messages={MOCK_SENT_MESSAGES} />

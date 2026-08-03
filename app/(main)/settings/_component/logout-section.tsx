@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 
 import { LogOut } from 'lucide-react';
 
-import { signOut } from '@/lib/auth/auth-client';
+import { LOGIN_PATH } from '@/lib/auth/constants';
+import { clearTokens } from '@/lib/auth/token';
 
 import {
   AlertDialog,
@@ -21,9 +22,9 @@ import {
 export function LogoutSection() {
   const router = useRouter();
 
-  async function handleSignOut() {
-    await signOut();
-    router.push('/login');
+  function handleSignOut() {
+    clearTokens();
+    router.replace(LOGIN_PATH);
   }
 
   return (
