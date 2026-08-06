@@ -4,7 +4,8 @@ import type { PublicMemorial } from '@/types/memorial';
 
 import { formatDateRange } from '@/lib/utils';
 
-import { FlowerOverlay } from '@/app/(main)/memorial/_component/flower-overlay';
+import { FlowerOverlay } from '@/components/flower-overlay';
+
 import { SendMessageForm } from '@/app/(main)/public-memorial/_component/send-message-form';
 
 interface PublicMemorialDetailProps {

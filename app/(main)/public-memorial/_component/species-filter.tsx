@@ -1,6 +1,6 @@
 'use client';
 
-import { Toggle } from '@/components/ui/toggle';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 export type SpeciesFilterValue = 'all' | 'dog' | 'cat';
 
@@ -17,19 +17,22 @@ const OPTIONS: { value: SpeciesFilterValue; label: string }[] = [
 
 export function SpeciesFilter({ value, onChange }: SpeciesFilterProps) {
   return (
-    <div className="flex gap-2 px-4 py-3">
+    <ToggleGroup
+      type="single"
+      variant="pill"
+      size="sm"
+      spacing={2}
+      value={value}
+      onValueChange={(next) => {
+        if (next) onChange(next as SpeciesFilterValue);
+      }}
+      className="px-4 py-3"
+    >
       {OPTIONS.map((option) => (
-        <Toggle
-          key={option.value}
-          variant="outline"
-          size="sm"
-          pressed={value === option.value}
-          onPressedChange={() => onChange(option.value)}
-          className="aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary rounded-full px-3"
-        >
+        <ToggleGroupItem key={option.value} value={option.value}>
           {option.label}
-        </Toggle>
+        </ToggleGroupItem>
       ))}
-    </div>
+    </ToggleGroup>
   );
 }

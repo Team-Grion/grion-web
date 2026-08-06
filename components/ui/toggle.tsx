@@ -13,6 +13,7 @@ const toggleVariants = cva(
       variant: {
         default: "bg-transparent",
         outline: "border border-input bg-transparent shadow-xs hover:bg-muted",
+        pill: "text-foreground rounded-full border border-input bg-transparent shadow-xs hover:bg-muted aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary data-[state=on]:border-gr-primary data-[state=on]:bg-gr-primary/8 data-[state=on]:text-gr-primary",
       },
       size: {
         default:
@@ -21,6 +22,12 @@ const toggleVariants = cva(
         lg: "h-10 min-w-10 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
       },
     },
+    compoundVariants: [
+      {
+        variant: "pill",
+        className: "px-3",
+      },
+    ],
     defaultVariants: {
       variant: "default",
       size: "default",
