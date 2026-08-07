@@ -1,40 +1,60 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import type { MemorialsResponse, Message } from '@/types/memorial';
+import { toast } from 'sonner';
+
+import type { PetMemorialSummary } from '@/types/memorial';
+
+import { getMyMemorials } from '@/lib/api/memorial';
 
 import { MemorialSpace } from '@/app/(main)/memorial/_component/memorial-space';
 import { PetProfileBar } from '@/app/(main)/memorial/_component/pet-profile-bar';
 
-interface MemorialViewProps {
-  memorials: MemorialsResponse;
-  messages: Record<string, Message[]>;
-}
+export function MemorialView() {
+  const [memorials, setMemorials] = useState<PetMemorialSummary[]>([]);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-export function MemorialView({ memorials, messages }: MemorialViewProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(
-    memorials?.[0]?.id ?? null,
-  );
+  useEffect(() => {
+    let isStale = false;
 
-  const selectedMemorial = memorials?.find((m) => m.id === selectedId) ?? null;
+    getMyMemorials()
+      .then((list) => {
+        if (isStale) return;
+        setMemorials(list);
+        setSelectedId(list[0]?.petId ?? null);
+      })
+      .catch((error) => {
+        if (isStale) return;
+        // 401은 인터셉터가 로그인으로 보내므로 여기서는 그 외 실패만 알린다
+        console.error('[memorials]', error);
+        toast('추모 공간을 불러오지 못했어요', {
+          description: '잠시 후 다시 시도해주세요',
+        });
+      })
+      .finally(() => {
+        if (!isStale) setIsLoading(false);
+      });
 
-  const selectedMessages = selectedId ? (messages[selectedId] ?? []) : [];
+    return () => {
+      isStale = true;
+    };
+  }, []);
+
+  if (isLoading) return null;
 
   return (
     <div>
-      {memorials && memorials.length > 0 && (
+      {memorials.length > 0 && (
         <PetProfileBar
           memorials={memorials}
           selectedId={selectedId}
           onSelect={setSelectedId}
         />
       )}
-      <MemorialSpace
-        key={selectedId}
-        memorial={selectedMemorial}
-        messages={selectedMessages}
-      />
+      {/* 상세 조회(GET /memorials/me/{petId}) 연동 전이라 아직 빈 상태로 둔다 */}
+      <MemorialSpace key={selectedId} memorial={null} messages={[]} />
     </div>
   );
 }

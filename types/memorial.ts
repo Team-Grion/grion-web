@@ -1,3 +1,10 @@
+/** GET /memorials/me — 목록에는 요약 정보만 내려온다 */
+export interface PetMemorialSummary {
+  petId: number;
+  petName: string;
+  aiImageUrl: string;
+}
+
 export interface MemorialProfile {
   id: string;
   petName: string;
