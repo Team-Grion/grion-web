@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
-const memorialShape = z.object({
-  // Step 1
+const step1Shape = {
   petPhoto: z.instanceof(File, { message: '사진을 등록해주세요' }),
   species: z.enum(['dog', 'cat'], { message: '종을 선택해주세요' }),
   breed: z.string().min(1, '품종을 선택해주세요'),
@@ -9,7 +8,27 @@ const memorialShape = z.object({
   personalities: z
     .array(z.string().max(50, '성격은 최대 50자까지 입력할 수 있어요'))
     .min(1, '성격을 하나 이상 선택해주세요'),
-  background: z.string().min(1, '배경을 선택해주세요'),
+  background: z
+    .string()
+    .min(1, '배경을 선택해주세요')
+    .max(255, '배경은 최대 255자까지 입력할 수 있어요'),
+};
+
+export const step1Schema = z.object(step1Shape);
+
+/**
+ * Step 1은 "다음"에서 step1Schema로 검증하고 곧바로 서버에 보낸다.
+ * 그래서 제출 시점에는 Step 1 규칙을 아예 검사하지 않는다 —
+ * 이어서 작성하기로 들어오면 이 값들이 기본값(빈 배열/빈 문자열)로 남아 있어
+ * .optional()만으로는 통과하지 못한다(undefined가 아니므로 안쪽 규칙이 돈다).
+ */
+const memorialShape = z.object({
+  // Step 1 — 여기서는 값을 담아두기만 한다
+  petPhoto: z.instanceof(File).optional(),
+  species: z.enum(['dog', 'cat']).optional(),
+  breed: z.string().optional(),
+  personalities: z.array(z.string()).optional(),
+  background: z.string().optional(),
   // Step 2
   petName: z
     .string()
@@ -57,18 +76,6 @@ export const STEP2_FIELDS = [
   'content',
   'memory',
 ] as const;
-
-// zodResolver validates the whole schema on every trigger()/handleSubmit()
-// call, so Step 1's "다음" gate uses this narrower schema instead — otherwise
-// untouched Step 2 fields (e.g. petName) would show errors before Step 2 is
-// even visible.
-export const step1Schema = memorialShape.pick({
-  petPhoto: true,
-  species: true,
-  breed: true,
-  personalities: true,
-  background: true,
-});
 
 export const DOG_BREEDS = [
   '말티즈',
