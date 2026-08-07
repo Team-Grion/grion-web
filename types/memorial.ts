@@ -40,11 +40,12 @@ export interface PublicMemorial extends MemorialProfile {
   userPhotos?: string[]; // 사용자 업로드 사진들
 }
 
-export interface Message {
-  id: string;
+/** GET /memorials/me/{petId}/letters */
+export interface PetLetter {
+  letterId: number;
   senderName: string;
   content: string;
-  sentAt: string; // ISO 8601
+  createdAt: string; // ISO 8601
 }
 
 export interface SentMessage {

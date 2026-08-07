@@ -1,5 +1,9 @@
 import type { ApiResponse } from '@/types/api';
-import type { PetMemorialDetail, PetMemorialSummary } from '@/types/memorial';
+import type {
+  PetLetter,
+  PetMemorialDetail,
+  PetMemorialSummary,
+} from '@/types/memorial';
 
 import { apiClient } from '@/lib/api/client';
 
@@ -30,6 +34,95 @@ export async function getMemorialDetail(
     throw new Error(message ?? '추모 공간을 찾을 수 없어요');
   }
   return data;
+}
+
+interface PetLetterListResponse {
+  petId: number;
+  letters: PetLetter[];
+}
+
+/** 받은 쪽지 목록. 쪽지함을 열 때만 부른다 — 개수는 상세 응답에 이미 있다. */
+export async function getMemorialLetters(petId: number): Promise<PetLetter[]> {
+  const response = await apiClient.get<ApiResponse<PetLetterListResponse>>(
+    `/memorials/me/${petId}/letters`,
+  );
+
+  return response.data.data?.letters ?? [];
+}
+
+/** AI 이미지 생성 진행 상태 */
+export type MemorialStatus = 'PENDING' | 'SUCCESS' | 'FAIL';
+
+export interface CreateMemorialPayload {
+  petPhoto: File;
+  species: string;
+  breed: string;
+  personalities: string[];
+  background: string;
+}
+
+/**
+ * 추모 공간을 만들고 AI 이미지 생성을 시작한다.
+ * 응답은 즉시 오지만 이미지는 아직 없다 — status로 진행 상황을 확인한다.
+ */
+export async function createMemorial({
+  petPhoto,
+  species,
+  breed,
+  personalities,
+  background,
+}: CreateMemorialPayload): Promise<{ petId: number; status: MemorialStatus }> {
+  const params = new URLSearchParams({ species, breed, background });
+  // 배열은 같은 이름의 파라미터를 값마다 반복한다
+  personalities.forEach((personality) =>
+    params.append('personalities', personality),
+  );
+
+  const formData = new FormData();
+  // 파트 이름이 URL 같지만 실제로는 파일이다
+  formData.append('petImageUrl', petPhoto);
+
+  const response = await apiClient.post<
+    ApiResponse<{ petId: number; status: MemorialStatus }>
+  >(`/memorials?${params}`, formData);
+
+  const { data, message } = response.data;
+  if (!data) {
+    throw new Error(message ?? '추모 공간을 만들지 못했어요');
+  }
+  return data;
+}
+
+export interface AddMemorialInfoPayload {
+  petName: string;
+  birthDate: string;
+  deathDate: string;
+  memory?: string;
+}
+
+export async function addMemorialInfo(
+  petId: number,
+  payload: AddMemorialInfoPayload,
+): Promise<void> {
+  await apiClient.post<ApiResponse<unknown>>(
+    `/memorials/${petId}/add`,
+    payload,
+  );
+}
+
+/** AI 이미지 생성 진행 상황. 작업이 없으면 404가 아니라 400이 온다. */
+export async function getMemorialStatus(
+  petId: number,
+): Promise<MemorialStatus> {
+  const response = await apiClient.get<ApiResponse<{ status: MemorialStatus }>>(
+    `/memorials/${petId}/status`,
+  );
+
+  const { data, message } = response.data;
+  if (!data) {
+    throw new Error(message ?? '생성 상태를 확인하지 못했어요');
+  }
+  return data.status;
 }
 
 export interface UpdateMemorialPayload {

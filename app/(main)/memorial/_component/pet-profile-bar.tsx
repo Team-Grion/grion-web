@@ -25,6 +25,9 @@ export function PetProfileBar({
     <div className="bg-background flex items-center gap-4 overflow-x-auto border-b px-4 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {memorials.map((memorial) => {
         const isSelected = memorial.petId === selectedId;
+        // Step 2를 마치지 못하면 이름이 비어 있다
+        const isDraft = !memorial.petName;
+        const label = memorial.petName || '작성 중';
         return (
           <button
             key={memorial.petId}
@@ -37,10 +40,8 @@ export function PetProfileBar({
                 isSelected && 'ring-gr-primary ring-2 ring-offset-2',
               )}
             >
-              <AvatarImage src={memorial.aiImageUrl} alt={memorial.petName} />
-              <AvatarFallback className="text-base">
-                {memorial.petName[0]}
-              </AvatarFallback>
+              <AvatarImage src={memorial.aiImageUrl} alt={label} />
+              <AvatarFallback className="text-base">{label[0]}</AvatarFallback>
             </Avatar>
             <span
               className={cn(
@@ -50,7 +51,18 @@ export function PetProfileBar({
                   : 'text-muted-foreground',
               )}
             >
-              {memorial.petName}
+              {label}
+              {isDraft && (
+                <span aria-hidden className="ml-px inline-flex">
+                  <span className="animate-bounce">.</span>
+                  <span className="animate-bounce [animation-delay:150ms]">
+                    .
+                  </span>
+                  <span className="animate-bounce [animation-delay:300ms]">
+                    .
+                  </span>
+                </span>
+              )}
             </span>
           </button>
         );
