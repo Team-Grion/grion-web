@@ -3,14 +3,25 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
+import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
 
+import type { ApiResponse } from '@/types/api';
+
+import { loginWithKakao } from '@/lib/api/auth';
 import { HOME_PATH } from '@/lib/auth/constants';
 import { ensureKakaoSdk, kakaoLogin } from '@/lib/auth/kakao-sdk';
 import { setTokens } from '@/lib/auth/token';
 
 function describeError(error: unknown): string {
+  // 서버가 실패 이유를 ApiResponse.message에 담아주므로 그것을 우선 보여준다
+  if (isAxiosError(error)) {
+    const message = (error.response?.data as ApiResponse<unknown> | undefined)
+      ?.message;
+    if (message) return message;
+  }
   if (error instanceof Error) return error.message;
+  // 카카오 SDK는 Error가 아닌 평범한 객체로 실패를 알려준다
   if (error && typeof error === 'object') {
     const { error: code, error_description: description } = error as {
       error?: string;
@@ -46,9 +57,10 @@ export function KakaoLoginButton() {
     try {
       const kakaoAccessToken = await kakaoLogin();
 
-      // TODO: 백엔드 연동 시 이 토큰을 POST /auth/kakao 로 보내고
-      //       응답으로 받은 서버 accessToken/refreshToken을 저장한다.
-      setTokens(kakaoAccessToken, kakaoAccessToken);
+      // 카카오 토큰은 신원 확인용으로 한 번만 쓰고, 서버 JWT로 교환한 뒤 버린다
+      const { accessToken, refreshToken } =
+        await loginWithKakao(kakaoAccessToken);
+      setTokens(accessToken, refreshToken);
 
       // 쿠키를 심은 뒤 전체 페이지 이동으로 middleware를 다시 태운다.
       // (클라이언트 네비게이션은 라우터 캐시에 걸릴 수 있어 확실한 쪽을 택함)

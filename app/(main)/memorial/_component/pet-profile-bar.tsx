@@ -4,16 +4,16 @@ import Link from 'next/link';
 
 import { Plus } from 'lucide-react';
 
-import type { MemorialProfile } from '@/types/memorial';
+import type { PetMemorialSummary } from '@/types/memorial';
 
 import { cn } from '@/lib/utils';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface PetProfileBarProps {
-  memorials: MemorialProfile[] | null;
-  selectedId: string | null;
-  onSelect: (id: string) => void;
+  memorials: PetMemorialSummary[];
+  selectedId: number | null;
+  onSelect: (petId: number) => void;
 }
 
 export function PetProfileBar({
@@ -23,12 +23,12 @@ export function PetProfileBar({
 }: PetProfileBarProps) {
   return (
     <div className="bg-background flex items-center gap-4 overflow-x-auto border-b px-4 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      {memorials?.map((memorial) => {
-        const isSelected = memorial.id === selectedId;
+      {memorials.map((memorial) => {
+        const isSelected = memorial.petId === selectedId;
         return (
           <button
-            key={memorial.id}
-            onClick={() => onSelect(memorial.id)}
+            key={memorial.petId}
+            onClick={() => onSelect(memorial.petId)}
             className="flex shrink-0 flex-col items-center gap-1.5"
           >
             <Avatar
@@ -37,7 +37,7 @@ export function PetProfileBar({
                 isSelected && 'ring-gr-primary ring-2 ring-offset-2',
               )}
             >
-              <AvatarImage src={memorial.userImageUrl} alt={memorial.petName} />
+              <AvatarImage src={memorial.aiImageUrl} alt={memorial.petName} />
               <AvatarFallback className="text-base">
                 {memorial.petName[0]}
               </AvatarFallback>
