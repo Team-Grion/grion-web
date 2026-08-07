@@ -5,6 +5,19 @@ export interface PetMemorialSummary {
   aiImageUrl: string;
 }
 
+/** GET /memorials/me/{petId} */
+export interface PetMemorialDetail {
+  petId: number;
+  petName: string;
+  // AI 이미지 생성이 끝나기 전에는 비어 있을 수 있다
+  aiImageUrl: string | null;
+  birthDate: string | null; // "YYYY-MM-DD"
+  deathDate: string | null;
+  letterCount: number;
+  content: string | null; // 한 줄 소개
+  isPublic: boolean;
+}
+
 export interface MemorialProfile {
   id: string;
   petName: string;

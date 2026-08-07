@@ -9,7 +9,14 @@ export function formatDate(dateStr: string): string {
   return dateStr.replace(/-/g, ".")
 }
 
-export function formatDateRange(birthDate: string, deathDate: string): string {
+/** 태어난 날/보낸 날은 선택 입력이라 한쪽만 있거나 둘 다 없을 수 있다. */
+export function formatDateRange(
+  birthDate: string | null | undefined,
+  deathDate: string | null | undefined,
+): string {
+  if (!birthDate && !deathDate) return ''
+  if (!birthDate) return formatDate(deathDate!)
+  if (!deathDate) return formatDate(birthDate)
   return `${formatDate(birthDate)} ~ ${formatDate(deathDate)}`
 }
 

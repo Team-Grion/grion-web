@@ -6,33 +6,60 @@ import Link from 'next/link';
 
 import { toast } from 'sonner';
 
-import type { MemorialProfile, Message } from '@/types/memorial';
+import type { PetMemorialDetail } from '@/types/memorial';
 
+import { updateMemorial, type UpdateMemorialPayload } from '@/lib/api/memorial';
 import { formatDateRange } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 import { Switch } from '@/components/ui/switch';
 
-import { EpitaphPlaque } from '@/app/(main)/memorial/_component/epitaph-plaque';
+import { ContentPlaque } from '@/app/(main)/memorial/_component/content-plaque';
 import { FlowerOverlay } from '@/app/(main)/memorial/_component/flower-overlay';
 import { MessageInbox } from '@/app/(main)/memorial/_component/message-inbox';
 
 interface MemorialSpaceProps {
-  memorial: MemorialProfile | null;
-  messages: Message[];
+  memorial: PetMemorialDetail | null;
 }
 
-export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
+export function MemorialSpace({ memorial }: MemorialSpaceProps) {
   const [isPublic, setIsPublic] = useState(memorial?.isPublic ?? false);
-  const [epitaph, setEpitaph] = useState(memorial?.epitaph ?? '');
+  const [content, setContent] = useState(memorial?.content ?? '');
+
+  // 먼저 화면을 바꾸고 저장은 뒤따라간다. 실패하면 이전 값으로 되돌린다.
+  async function persist(next: UpdateMemorialPayload, revert: () => void) {
+    if (!memorial) return;
+
+    try {
+      await updateMemorial(memorial.petId, next);
+    } catch (error) {
+      console.error('[memorial-update]', error);
+      revert();
+      toast('변경사항을 저장하지 못했어요', {
+        description: '잠시 후 다시 시도해주세요',
+      });
+    }
+  }
 
   function handlePublicChange(next: boolean) {
+    const previous = isPublic;
     setIsPublic(next);
-    if (next && !epitaph) {
+
+    if (next && !content) {
       toast('공개로 전환됐어요', {
         description: '한 줄 소개를 남겨보시겠어요?',
       });
     }
+
+    void persist({ content, isPublic: next }, () => setIsPublic(previous));
+  }
+
+  function handleContentChange(next: string) {
+    const previous = content;
+    setContent(next);
+
+    void persist({ content: next, isPublic }, () => setContent(previous));
   }
 
   if (!memorial) {
@@ -54,23 +81,34 @@ export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
 
   return (
     <div className="flex flex-col items-center gap-3 px-6 py-6">
-      <div className="relative aspect-square w-full max-w-sm overflow-hidden rounded-2xl">
-        <Image
-          src={memorial.aiImageUrl}
-          alt={memorial.petName}
-          fill
-          className="object-cover"
-        />
-        <FlowerOverlay count={messages.length} />
+      <div className="bg-gr-secondary relative aspect-square w-full max-w-sm overflow-hidden rounded-2xl">
+        {memorial.aiImageUrl ? (
+          <Image
+            src={memorial.aiImageUrl}
+            alt={memorial.petName}
+            fill
+            className="object-cover"
+            // NAT64(DNS64) 네트워크에서는 Next.js 이미지 서버가 외부 호스트의
+            // 공인 IP를 사설 IP로 오판해 차단한다. 개발 중에만 최적화를 건너뛴다.
+            unoptimized={process.env.NODE_ENV === 'development'}
+          />
+        ) : (
+          // AI 이미지 생성이 끝나기 전에도 화면은 떠야 한다
+          <div className="text-muted-foreground flex h-full flex-col items-center justify-center gap-2 text-sm">
+            <Spinner />
+            그림을 그리고 있어요
+          </div>
+        )}
+        <FlowerOverlay count={memorial.letterCount} />
       </div>
       <h2 className="text-xl font-semibold">{memorial.petName}</h2>
       <p className="text-muted-foreground text-sm">
         {formatDateRange(memorial.birthDate, memorial.deathDate)}
       </p>
 
-      <EpitaphPlaque
-        value={epitaph}
-        onChange={setEpitaph}
+      <ContentPlaque
+        value={content}
+        onChange={handleContentChange}
         isPublic={isPublic}
       />
 
@@ -89,7 +127,8 @@ export function MemorialSpace({ memorial, messages }: MemorialSpaceProps) {
           <Switch checked={isPublic} onCheckedChange={handlePublicChange} />
         </div>
 
-        <MessageInbox messages={messages} />
+        {/* 쪽지 목록(GET /memorials/me/{petId}/letters) 연동 전 */}
+        <MessageInbox messages={[]} />
       </div>
     </div>
   );
