@@ -3,9 +3,10 @@ import axios, { type AxiosError } from 'axios';
 import { LOGIN_PATH } from '@/lib/auth/constants';
 import { clearTokens, getAccessToken } from '@/lib/auth/token';
 
+// Content-Type을 지정하지 않는다. axios가 본문을 보고 정하는데,
+// 여기서 못박으면 FormData 업로드에 multipart boundary가 붙지 않는다.
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
 });
 
 apiClient.interceptors.request.use((config) => {

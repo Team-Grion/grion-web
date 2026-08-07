@@ -3,36 +3,13 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
 
-import type { ApiResponse } from '@/types/api';
-
 import { loginWithKakao } from '@/lib/api/auth';
+import { describeApiError } from '@/lib/api/error';
 import { HOME_PATH } from '@/lib/auth/constants';
 import { ensureKakaoSdk, kakaoLogin } from '@/lib/auth/kakao-sdk';
 import { setTokens } from '@/lib/auth/token';
-
-function describeError(error: unknown): string {
-  // 서버가 실패 이유를 ApiResponse.message에 담아주므로 그것을 우선 보여준다
-  if (isAxiosError(error)) {
-    const message = (error.response?.data as ApiResponse<unknown> | undefined)
-      ?.message;
-    if (message) return message;
-  }
-  if (error instanceof Error) return error.message;
-  // 카카오 SDK는 Error가 아닌 평범한 객체로 실패를 알려준다
-  if (error && typeof error === 'object') {
-    const { error: code, error_description: description } = error as {
-      error?: string;
-      error_description?: string;
-    };
-    if (code || description) {
-      return [code, description].filter(Boolean).join(': ');
-    }
-  }
-  return '잠시 후 다시 시도해주세요';
-}
 
 export function KakaoLoginButton() {
   const [isReady, setIsReady] = useState(false);
@@ -44,7 +21,7 @@ export function KakaoLoginButton() {
       .catch((error) => {
         console.error('[kakao-sdk]', error);
         toast('카카오 로그인을 준비하지 못했어요', {
-          description: describeError(error),
+          description: describeApiError(error),
         });
       });
   }, []);
@@ -68,7 +45,7 @@ export function KakaoLoginButton() {
     } catch (error) {
       console.error('[kakao-login]', error);
       toast('카카오 로그인에 실패했어요', {
-        description: describeError(error),
+        description: describeApiError(error),
       });
       // 성공 시에는 페이지가 곧 바뀌므로 버튼을 계속 비활성 상태로 둔다
       setIsPending(false);
