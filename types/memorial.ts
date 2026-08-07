@@ -48,10 +48,21 @@ export interface PetLetter {
   createdAt: string; // ISO 8601
 }
 
-export interface SentMessage {
-  id: string;
-  toPetName: string;
-  anonymous: boolean;
-  preview: string;
-  sentAt: string; // ISO 8601
+/** GET /users/me — 내가 보낸 쪽지 */
+export interface UserLetterSummary {
+  letterId: number;
+  petId: number;
+  petName: string;
+  isAnonymous: boolean;
+  content: string;
+  createdAt: string; // ISO 8601
+}
+
+/** GET /users/me */
+export interface UserPage {
+  userId: number;
+  name: string;
+  profileImageUrl: string | null;
+  totalCount: number;
+  letters: UserLetterSummary[];
 }
