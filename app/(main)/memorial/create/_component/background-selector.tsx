@@ -6,15 +6,15 @@ import { BACKGROUNDS } from '@/app/(main)/memorial/create/_component/schema';
 
 interface BackgroundSelectorProps {
   value: string | undefined;
-  onChange: (bgId: string | undefined) => void;
+  onChange: (background: string) => void;
 }
 
 export function BackgroundSelector({
   value,
   onChange,
 }: BackgroundSelectorProps) {
-  function handleSelect(bgId: string) {
-    onChange(value === bgId ? undefined : bgId);
+  function handleSelect(background: string) {
+    onChange(value === background ? '' : background);
   }
 
   return (

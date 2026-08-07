@@ -49,9 +49,9 @@ export function CreateMemorialForm() {
     resolver: zodResolver(createMemorialSchema),
     defaultValues: {
       personalities: [],
-      bgId: undefined,
+      background: '',
       petName: '',
-      epitaph: '',
+      content: '',
       birthDate: '',
       deathDate: '',
       memory: '',
@@ -179,37 +179,29 @@ export function CreateMemorialForm() {
             <Controller
               control={control}
               name="personalities"
-              render={({ field }) => (
-                <Field>
-                  <FieldLabel>
-                    성격{' '}
-                    <span className="text-muted-foreground text-xs font-normal">
-                      (선택)
-                    </span>
-                  </FieldLabel>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={!!fieldState.error}>
+                  <FieldLabel>성격</FieldLabel>
                   <PersonalitySelector
                     value={field.value ?? []}
                     onChange={field.onChange}
                   />
+                  <FieldError errors={[fieldState.error]} />
                 </Field>
               )}
             />
 
             <Controller
               control={control}
-              name="bgId"
-              render={({ field }) => (
-                <Field>
-                  <FieldLabel>
-                    원하는 배경{' '}
-                    <span className="text-muted-foreground text-xs font-normal">
-                      (선택)
-                    </span>
-                  </FieldLabel>
+              name="background"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={!!fieldState.error}>
+                  <FieldLabel>원하는 배경</FieldLabel>
                   <BackgroundSelector
                     value={field.value}
                     onChange={field.onChange}
                   />
+                  <FieldError errors={[fieldState.error]} />
                 </Field>
               )}
             />
@@ -263,12 +255,7 @@ export function CreateMemorialForm() {
                     : undefined;
                   return (
                     <Field data-invalid={!!error}>
-                      <FieldLabel>
-                        태어난 날{' '}
-                        <span className="text-muted-foreground text-xs font-normal">
-                          (선택)
-                        </span>
-                      </FieldLabel>
+                      <FieldLabel>태어난 날</FieldLabel>
                       <DatePicker
                         value={field.value}
                         onChange={field.onChange}
@@ -293,12 +280,7 @@ export function CreateMemorialForm() {
                     : undefined;
                   return (
                     <Field data-invalid={!!error}>
-                      <FieldLabel>
-                        보낸 날{' '}
-                        <span className="text-muted-foreground text-xs font-normal">
-                          (선택)
-                        </span>
-                      </FieldLabel>
+                      <FieldLabel>보낸 날</FieldLabel>
                       <DatePicker
                         value={field.value}
                         onChange={field.onChange}
@@ -320,7 +302,7 @@ export function CreateMemorialForm() {
 
             <Controller
               control={control}
-              name="epitaph"
+              name="content"
               render={({ field, fieldState }) => {
                 const error = formState.isSubmitted
                   ? fieldState.error

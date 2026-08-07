@@ -5,19 +5,22 @@ const memorialShape = z.object({
   petPhoto: z.instanceof(File, { message: '사진을 등록해주세요' }),
   species: z.enum(['dog', 'cat'], { message: '종을 선택해주세요' }),
   breed: z.string().min(1, '품종을 선택해주세요'),
-  personalities: z.array(z.string()).optional(),
-  bgId: z.string().optional(),
+  // 각 항목 50자 이내, 중복 불가 (서버 PK가 (pet_id, personality))
+  personalities: z
+    .array(z.string().max(50, '성격은 최대 50자까지 입력할 수 있어요'))
+    .min(1, '성격을 하나 이상 선택해주세요'),
+  background: z.string().min(1, '배경을 선택해주세요'),
   // Step 2
   petName: z
     .string()
     .min(1, '이름을 입력해주세요')
     .max(20, '이름은 최대 20자까지 입력할 수 있어요'),
-  epitaph: z
+  content: z
     .string()
     .max(40, '한 줄 소개는 최대 40자까지 입력할 수 있어요')
     .optional(),
-  birthDate: z.string().optional(),
-  deathDate: z.string().optional(),
+  birthDate: z.string().min(1, '태어난 날짜를 선택해주세요'),
+  deathDate: z.string().min(1, '보낸 날을 선택해주세요'),
   memory: z
     .string()
     .max(1000, '추억은 최대 1000자까지 입력할 수 있어요')
@@ -44,14 +47,14 @@ export const STEP1_FIELDS = [
   'species',
   'breed',
   'personalities',
-  'bgId',
+  'background',
 ] as const;
 
 export const STEP2_FIELDS = [
   'petName',
   'birthDate',
   'deathDate',
-  'epitaph',
+  'content',
   'memory',
 ] as const;
 
@@ -64,7 +67,7 @@ export const step1Schema = memorialShape.pick({
   species: true,
   breed: true,
   personalities: true,
-  bgId: true,
+  background: true,
 });
 
 export const DOG_BREEDS = [
