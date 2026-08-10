@@ -56,6 +56,9 @@ export interface UserLetterSummary {
   isAnonymous: boolean;
   content: string;
   createdAt: string; // ISO 8601
+  // 주인이 비공개로 돌리면 공개 추모공간에 들어갈 수 없다.
+  // 서버 배포 전에는 내려오지 않아 optional로 둔다.
+  isPetPublic?: boolean;
 }
 
 /** GET /users/me */

@@ -1,11 +1,14 @@
 'use client';
 
-import { ChevronRight, MailOpen } from 'lucide-react';
+import Link from 'next/link';
+
+import { ArrowRight, ChevronRight, Lock, MailOpen } from 'lucide-react';
 
 import type { UserLetterSummary } from '@/types/memorial';
 
 import { formatSentAt } from '@/lib/utils';
 
+import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
@@ -78,6 +81,21 @@ export function SentMessageList({ letters }: SentMessageListProps) {
                         : '이름 공개로 전송'}
                     </p>
                     <p className="text-sm leading-relaxed">{letter.content}</p>
+
+                    {letter.isPetPublic === false ? (
+                      // 눌러본 뒤에 막히는 것보다 미리 알려주는 편이 낫다
+                      <p className="text-muted-foreground mt-6 flex items-center gap-1.5 text-xs">
+                        <Lock className="size-3.5 shrink-0" />
+                        지금은 비공개 상태라 추모공간을 볼 수 없어요
+                      </p>
+                    ) : (
+                      <Button asChild variant="outline" className="mt-6 w-full">
+                        <Link href={`/public-memorial/${letter.petId}`}>
+                          {letter.petName}의 추모공간 가기
+                          <ArrowRight />
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 </SheetContent>
               </Sheet>
