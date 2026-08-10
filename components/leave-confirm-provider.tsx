@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import {
@@ -36,21 +36,23 @@ export function LeaveConfirmProvider({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [pendingHref, setPendingHref] = useState<string | null>(null);
-
-  const guardedRoute = GUARDED_ROUTES[pathname];
-
   // Any actual route change (including browser back/forward, which bypasses
   // our click handlers entirely) makes a stale pending confirmation moot.
-  useEffect(() => {
-    setPendingHref(null);
-  }, [pathname]);
+  // Deriving it during render beats resetting from an effect: the stale value
+  // never reaches the screen, and there is no extra render pass.
+  const [pending, setPending] = useState<{
+    href: string;
+    pathname: string;
+  } | null>(null);
+  const pendingHref = pending?.pathname === pathname ? pending.href : null;
+
+  const guardedRoute = GUARDED_ROUTES[pathname];
 
   function createGuardedClickHandler(href: string) {
     return (e: React.MouseEvent) => {
       if (guardedRoute && href !== pathname) {
         e.preventDefault();
-        setPendingHref(href);
+        setPending({ href, pathname });
       }
     };
   }
@@ -60,7 +62,7 @@ export function LeaveConfirmProvider({
       {children}
       <AlertDialog
         open={!!pendingHref}
-        onOpenChange={(open) => !open && setPendingHref(null)}
+        onOpenChange={(open) => !open && setPending(null)}
       >
         <AlertDialogContent size="sm" className="gap-8">
           <AlertDialogHeader>

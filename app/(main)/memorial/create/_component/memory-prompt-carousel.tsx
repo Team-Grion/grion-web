@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { MEMORY_PROMPTS } from '@/app/(main)/memorial/create/_component/schema';
 
@@ -10,24 +10,20 @@ interface MemoryPromptCarouselProps {
 
 export function MemoryPromptCarousel({ onSelect }: MemoryPromptCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  // 화면에 쓰이지 않고 다음 카드를 고르는 데만 필요하다.
+  // state로 두면 3초마다 의미 없는 리렌더가 돈다.
+  const activeIndexRef = useRef(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveIndex((prev) => {
-        const next = (prev + 1) % MEMORY_PROMPTS.length;
-        const container = scrollRef.current;
-        if (container) {
-          const card = container.children[next] as HTMLElement;
-          if (card) {
-            card.scrollIntoView({
-              behavior: 'smooth',
-              block: 'nearest',
-              inline: 'center',
-            });
-          }
-        }
-        return next;
+      const next = (activeIndexRef.current + 1) % MEMORY_PROMPTS.length;
+      activeIndexRef.current = next;
+
+      const card = scrollRef.current?.children[next] as HTMLElement | undefined;
+      card?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
       });
     }, 3000);
 

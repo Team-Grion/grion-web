@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { Camera } from 'lucide-react';
 
@@ -12,7 +12,18 @@ interface PetPhotoInputProps {
 
 export function PetPhotoInput({ value, onChange, error }: PetPhotoInputProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const previewUrl = value ? URL.createObjectURL(value) : null;
+
+  // createObjectURL은 호출할 때마다 새 blob을 만들고 직접 해제하기 전까지
+  // 메모리에 남는다. 파일이 바뀔 때만 만들고, 쓰임이 끝나면 돌려준다.
+  const previewUrl = useMemo(
+    () => (value ? URL.createObjectURL(value) : null),
+    [value],
+  );
+
+  useEffect(() => {
+    if (!previewUrl) return;
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -35,6 +46,9 @@ export function PetPhotoInput({ value, onChange, error }: PetPhotoInputProps) {
         className="border-muted-foreground/40 bg-muted hover:border-gr-accent/60 relative flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-colors"
       >
         {previewUrl ? (
+          // blob URL은 브라우저 메모리에만 있어서 next/image가 최적화할 수
+          // 없다. 사용자가 방금 고른 파일이라 네트워크도 타지 않는다.
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={previewUrl}
             alt="반려동물 사진"
