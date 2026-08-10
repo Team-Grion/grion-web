@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+/** zod 검증, textarea maxLength, 글자 수 카운터가 함께 쓴다 */
+export const MEMORY_MAX_LENGTH = 500;
+
 const step1Shape = {
   petPhoto: z.instanceof(File, { message: '사진을 등록해주세요' }),
   species: z.enum(['dog', 'cat'], { message: '종을 선택해주세요' }),
@@ -42,7 +45,10 @@ const memorialShape = z.object({
   deathDate: z.string().min(1, '보낸 날을 선택해주세요'),
   memory: z
     .string()
-    .max(1000, '추억은 최대 1000자까지 입력할 수 있어요')
+    .max(
+      MEMORY_MAX_LENGTH,
+      `추억은 최대 ${MEMORY_MAX_LENGTH}자까지 입력할 수 있어요`,
+    )
     .optional(),
 });
 

@@ -35,6 +35,7 @@ import { PersonalitySelector } from '@/app/(main)/memorial/create/_component/per
 import { PetPhotoInput } from '@/app/(main)/memorial/create/_component/pet-photo-input';
 import {
   createMemorialSchema,
+  MEMORY_MAX_LENGTH,
   STEP1_FIELDS,
   step1Schema,
   type CreateMemorialFormValues,
@@ -378,12 +379,11 @@ export function CreateMemorialForm() {
                         value={field.value}
                         onChange={field.onChange}
                         placeholder="보낸 날"
-                        disabled={[
-                          ...(birthDate
-                            ? [{ before: new Date(birthDate) }]
-                            : []),
-                          { after: new Date() },
-                        ]}
+                        disabled={
+                          birthDate
+                            ? { before: new Date(birthDate) }
+                            : undefined
+                        }
                         ariaInvalid={!!error}
                       />
                       <FieldError errors={[error]} />
@@ -438,21 +438,21 @@ export function CreateMemorialForm() {
                     <MemoryPromptCarousel
                       onSelect={(prompt) => {
                         const current = field.value ?? '';
-                        field.onChange(
-                          current ? `${current}\n${prompt}` : prompt,
-                        );
+                        const next = current ? `${current}\n${prompt}` : prompt;
+                        // 값을 직접 넣는 경로라 textarea의 maxLength를 거치지 않는다
+                        field.onChange(next.slice(0, MEMORY_MAX_LENGTH));
                       }}
                     />
                     <Textarea
                       {...field}
                       placeholder="소중한 추억을 적어주세요"
                       rows={4}
-                      maxLength={1000}
+                      maxLength={MEMORY_MAX_LENGTH}
                       className="mt-2 resize-none"
                       aria-invalid={!!error}
                     />
                     <div className="text-muted-foreground flex justify-end text-xs">
-                      {memory.length} / 1000
+                      {memory.length} / {MEMORY_MAX_LENGTH}
                     </div>
                     <FieldError errors={[error]} />
                   </Field>
