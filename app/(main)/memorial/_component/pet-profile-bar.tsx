@@ -51,17 +51,22 @@ export function PetProfileBar({
                   : 'text-muted-foreground',
               )}
             >
-              {label}
-              {isDraft && (
-                <span aria-hidden className="ml-px inline-flex">
-                  <span className="animate-bounce">.</span>
-                  <span className="animate-bounce [animation-delay:150ms]">
-                    .
+              {isDraft ? (
+                <>
+                  {/* 점만 보이면 화면 낭독기에는 아무 의미가 없다 */}
+                  <span className="sr-only">작성 중</span>
+                  <span aria-hidden className="inline-flex">
+                    <span className="animate-bounce">.</span>
+                    <span className="animate-bounce [animation-delay:150ms]">
+                      .
+                    </span>
+                    <span className="animate-bounce [animation-delay:300ms]">
+                      .
+                    </span>
                   </span>
-                  <span className="animate-bounce [animation-delay:300ms]">
-                    .
-                  </span>
-                </span>
+                </>
+              ) : (
+                label
               )}
             </span>
           </button>

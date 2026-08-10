@@ -1,12 +1,12 @@
 {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    },
-    "files.associations": {
-      "*.css": "tailwindcss"
-    },
-    "typescript.preferences.importModuleSpecifier": "non-relative",
-    "eslint.useFlatConfig": true
-  }
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "eslint.useFlatConfig": true
+}
