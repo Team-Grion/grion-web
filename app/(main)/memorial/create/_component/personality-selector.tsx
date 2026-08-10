@@ -66,7 +66,7 @@ export function PersonalitySelector({
             size="sm"
             pressed={value.includes(option)}
             onPressedChange={() => toggle(option)}
-            className="aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary rounded-full px-3"
+            className="text-foreground aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary rounded-full px-3"
           >
             {option}
           </Toggle>
@@ -81,7 +81,7 @@ export function PersonalitySelector({
               size="sm"
               pressed
               onPressedChange={() => toggle(custom)}
-              className="aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary rounded-full px-3"
+              className="text-foreground aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary rounded-full px-3"
             >
               {custom}
             </Toggle>
@@ -111,7 +111,7 @@ export function PersonalitySelector({
             onKeyDown={handleCustomKeyDown}
             placeholder="성격을 입력하세요 (최대 20자)"
             maxLength={20}
-            className="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex-1 rounded-md border bg-transparent px-3 py-1.5 text-sm outline-none focus-visible:ring-1"
+            className="border-input text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex-1 rounded-md border bg-transparent px-3 py-1.5 text-sm outline-none focus-visible:ring-1"
           />
           <button
             type="button"

@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 import { Input } from '@/components/ui/input';
 
-interface EpitaphPlaqueProps {
+interface ContentPlaqueProps {
   value: string;
   onChange: (value: string) => void;
   isPublic: boolean;
@@ -16,11 +16,11 @@ interface EpitaphPlaqueProps {
 
 const MAX_LENGTH = 40;
 
-export function EpitaphPlaque({
+export function ContentPlaque({
   value,
   onChange,
   isPublic,
-}: EpitaphPlaqueProps) {
+}: ContentPlaqueProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(value);
 

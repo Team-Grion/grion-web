@@ -14,12 +14,23 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
+/**
+ * 기록상 가장 오래 산 반려동물이 38년이라 그보다 이전은 고를 이유가 없다.
+ * 연도 드롭다운 길이도 이 범위가 결정한다.
+ */
+const EARLIEST_MONTH = new Date(1980, 0);
+
 interface DatePickerProps {
   value: string | undefined;
   onChange: (value: string) => void;
   placeholder?: string;
   disabled?: Matcher | Matcher[];
   ariaInvalid?: boolean;
+}
+
+function toArray(matcher: Matcher | Matcher[] | undefined): Matcher[] {
+  if (!matcher) return [];
+  return Array.isArray(matcher) ? matcher : [matcher];
 }
 
 export function DatePicker({
@@ -62,11 +73,23 @@ export function DatePicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
+        {/*
+          disabled만 걸면 날짜는 못 고르지만 달력은 계속 넘어간다.
+          이동 범위와 연도 드롭다운은 startMonth/endMonth가 정한다.
+        */}
         <Calendar
           mode="single"
           selected={selected}
           onSelect={handleSelect}
-          disabled={disabled}
+          disabled={[
+            { before: EARLIEST_MONTH },
+            // 태어난 날도 보낸 날도 미래일 수 없다
+            { after: new Date() },
+            ...toArray(disabled),
+          ]}
+          startMonth={EARLIEST_MONTH}
+          endMonth={new Date()}
+          defaultMonth={selected}
           captionLayout="dropdown"
           locale={ko}
         />

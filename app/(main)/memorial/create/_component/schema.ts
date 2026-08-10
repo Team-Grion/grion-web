@@ -1,26 +1,54 @@
 import { z } from 'zod';
 
-const memorialShape = z.object({
-  // Step 1
+/** zod 검증, textarea maxLength, 글자 수 카운터가 함께 쓴다 */
+export const MEMORY_MAX_LENGTH = 500;
+
+const step1Shape = {
   petPhoto: z.instanceof(File, { message: '사진을 등록해주세요' }),
   species: z.enum(['dog', 'cat'], { message: '종을 선택해주세요' }),
   breed: z.string().min(1, '품종을 선택해주세요'),
+  // 각 항목 50자 이내, 중복 불가 (서버 PK가 (pet_id, personality))
+  personalities: z
+    .array(z.string().max(50, '성격은 최대 50자까지 입력할 수 있어요'))
+    .min(1, '성격을 하나 이상 선택해주세요'),
+  background: z
+    .string()
+    .min(1, '배경을 선택해주세요')
+    .max(255, '배경은 최대 255자까지 입력할 수 있어요'),
+};
+
+export const step1Schema = z.object(step1Shape);
+
+/**
+ * Step 1은 "다음"에서 step1Schema로 검증하고 곧바로 서버에 보낸다.
+ * 그래서 제출 시점에는 Step 1 규칙을 아예 검사하지 않는다 —
+ * 이어서 작성하기로 들어오면 이 값들이 기본값(빈 배열/빈 문자열)로 남아 있어
+ * .optional()만으로는 통과하지 못한다(undefined가 아니므로 안쪽 규칙이 돈다).
+ */
+const memorialShape = z.object({
+  // Step 1 — 여기서는 값을 담아두기만 한다
+  petPhoto: z.instanceof(File).optional(),
+  species: z.enum(['dog', 'cat']).optional(),
+  breed: z.string().optional(),
   personalities: z.array(z.string()).optional(),
-  bgId: z.string().optional(),
+  background: z.string().optional(),
   // Step 2
   petName: z
     .string()
     .min(1, '이름을 입력해주세요')
     .max(20, '이름은 최대 20자까지 입력할 수 있어요'),
-  epitaph: z
+  content: z
     .string()
     .max(40, '한 줄 소개는 최대 40자까지 입력할 수 있어요')
     .optional(),
-  birthDate: z.string().optional(),
-  deathDate: z.string().optional(),
+  birthDate: z.string().min(1, '태어난 날짜를 선택해주세요'),
+  deathDate: z.string().min(1, '보낸 날을 선택해주세요'),
   memory: z
     .string()
-    .max(1000, '추억은 최대 1000자까지 입력할 수 있어요')
+    .max(
+      MEMORY_MAX_LENGTH,
+      `추억은 최대 ${MEMORY_MAX_LENGTH}자까지 입력할 수 있어요`,
+    )
     .optional(),
 });
 
@@ -44,28 +72,16 @@ export const STEP1_FIELDS = [
   'species',
   'breed',
   'personalities',
-  'bgId',
+  'background',
 ] as const;
 
 export const STEP2_FIELDS = [
   'petName',
   'birthDate',
   'deathDate',
-  'epitaph',
+  'content',
   'memory',
 ] as const;
-
-// zodResolver validates the whole schema on every trigger()/handleSubmit()
-// call, so Step 1's "다음" gate uses this narrower schema instead — otherwise
-// untouched Step 2 fields (e.g. petName) would show errors before Step 2 is
-// even visible.
-export const step1Schema = memorialShape.pick({
-  petPhoto: true,
-  species: true,
-  breed: true,
-  personalities: true,
-  bgId: true,
-});
 
 export const DOG_BREEDS = [
   '말티즈',

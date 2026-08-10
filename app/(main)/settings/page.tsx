@@ -1,34 +1,5 @@
-import type { SentMessage } from '@/types/memorial';
-
-import { LogoutSection } from '@/app/(main)/settings/_component/logout-section';
-import { ProfileSection } from '@/app/(main)/settings/_component/profile-section';
-import { SentMessageList } from '@/app/(main)/settings/_component/sent-message-list';
-
-const MOCK_SENT_MESSAGES: SentMessage[] = [
-  {
-    id: 's1',
-    toPetName: '코코',
-    anonymous: false,
-    preview: '코코야, 네가 곁에 있어서 정말 행복했어. 지금도 많이 보고 싶어.',
-    sentAt: '2025-03-12T14:23:00Z',
-  },
-  {
-    id: 's2',
-    toPetName: '몽이',
-    anonymous: true,
-    preview: '무지개 다리 너머에서도 행복하게 지내길 바랄게.',
-    sentAt: '2025-02-28T09:05:00Z',
-  },
-];
+import { SettingsView } from '@/app/(main)/settings/_component/settings-view';
 
 export default function SettingsPage() {
-  // TODO: 백엔드 연동 시 사용자 정보 API로 이름·프로필 이미지 채우기
-  return (
-    <div className="flex flex-col divide-y">
-      <ProfileSection name="사용자">
-        <LogoutSection />
-      </ProfileSection>
-      <SentMessageList messages={MOCK_SENT_MESSAGES} />
-    </div>
-  );
+  return <SettingsView />;
 }

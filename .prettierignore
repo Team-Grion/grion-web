@@ -1,0 +1,10 @@
+# shadcn CLI가 생성하는 파일. 우리가 손대는 코드가 아니라 포맷 대상에서 뺀다.
+# (재설치하면 다시 원래 포맷으로 덮어써진다)
+components/ui/**
+hooks/use-mobile.ts
+
+# 빌드 산출물
+.next/**
+out/**
+build/**
+next-env.d.ts
