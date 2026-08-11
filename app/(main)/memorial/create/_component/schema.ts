@@ -109,6 +109,20 @@ export const CAT_BREEDS = [
   '기타',
 ];
 
+/**
+ * "기타"로 직접 입력한 값은 서버에 그대로 보내지 않고 "기타"로 정규화한다.
+ * breed는 AI 이미지 생성 프롬프트에 그대로 들어가는데, 검증되지 않은
+ * 자유 입력 텍스트를 그대로 보내고 싶지 않다.
+ */
+export function normalizeBreed(
+  species: 'dog' | 'cat' | undefined,
+  breed: string,
+): string {
+  const breeds =
+    species === 'dog' ? DOG_BREEDS : species === 'cat' ? CAT_BREEDS : [];
+  return breeds.includes(breed) ? breed : '기타';
+}
+
 export const BACKGROUNDS = [
   { id: 'sky', label: '하늘' },
   { id: 'flower-field', label: '꽃밭' },

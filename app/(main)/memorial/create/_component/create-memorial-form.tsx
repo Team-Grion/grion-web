@@ -36,6 +36,7 @@ import { PetPhotoInput } from '@/app/(main)/memorial/create/_component/pet-photo
 import {
   createMemorialSchema,
   MEMORY_MAX_LENGTH,
+  normalizeBreed,
   STEP1_FIELDS,
   step1Schema,
   type CreateMemorialFormValues,
@@ -116,7 +117,10 @@ export function CreateMemorialForm() {
     // 사용자가 Step 2를 입력하는 동안 AI 이미지 생성이 함께 진행된다.
     setIsCreating(true);
     try {
-      const created = await createMemorial(result.data);
+      const created = await createMemorial({
+        ...result.data,
+        breed: normalizeBreed(result.data.species, result.data.breed),
+      });
       setPetId(created.petId);
       setStep(2);
       // 새로고침해도 Step 2로 돌아오도록 petId를 URL에 남긴다.
