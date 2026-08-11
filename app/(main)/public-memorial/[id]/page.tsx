@@ -25,8 +25,7 @@ export default async function PublicMemorialDetailPage({ params }: Props) {
           공개 추모 공간
         </Link>
       </div>
-      {/* TODO: 백엔드 연동 시 사용자 정보 API에서 이름 가져오기 */}
-      <PublicMemorialDetail petId={petId} userName="사용자" />
+      <PublicMemorialDetail petId={petId} />
     </div>
   );
 }

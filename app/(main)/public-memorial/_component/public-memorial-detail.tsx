@@ -8,22 +8,20 @@ import { ImageOff } from 'lucide-react';
 import type { PetMemorialPublicDetail } from '@/types/memorial';
 
 import { getPublicMemorialDetail } from '@/lib/api/memorial';
+import { getMyPage } from '@/lib/api/user';
 import { formatDateRange } from '@/lib/utils';
 
 import { SendMessageForm } from '@/app/(main)/public-memorial/_component/send-message-form';
 
 interface PublicMemorialDetailProps {
   petId: number;
-  userName: string;
 }
 
-export function PublicMemorialDetail({
-  petId,
-  userName,
-}: PublicMemorialDetailProps) {
+export function PublicMemorialDetail({ petId }: PublicMemorialDetailProps) {
   const [memorial, setMemorial] = useState<PetMemorialPublicDetail | null>(
     null,
   );
+  const [userName, setUserName] = useState('사용자');
   const [hasError, setHasError] = useState(false);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
@@ -47,6 +45,23 @@ export function PublicMemorialDetail({
       isStale = true;
     };
   }, [petId]);
+
+  useEffect(() => {
+    let isStale = false;
+
+    // 실패해도 쪽지는 보낼 수 있어야 하니 기본값('사용자')으로 계속 진행한다
+    getMyPage()
+      .then((user) => {
+        if (!isStale) setUserName(user.name);
+      })
+      .catch((error) => {
+        console.error('[my-page]', error);
+      });
+
+    return () => {
+      isStale = true;
+    };
+  }, []);
 
   if (!hasLoadedOnce) return null;
 
