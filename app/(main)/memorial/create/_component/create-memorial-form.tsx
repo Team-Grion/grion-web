@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -251,6 +252,11 @@ export function CreateMemorialForm() {
                       onChange={field.onChange}
                       error={error?.message}
                     />
+                    <FieldDescription>
+                      AI가 사진을 바탕으로 그려드려요. 실제와 가까운 정보를
+                      입력할수록 더 자연스러워요 — 여러 품종이 섞인 것 같다면
+                      믹스견/믹스묘를 선택해주세요
+                    </FieldDescription>
                   </Field>
                 );
               }}
