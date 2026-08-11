@@ -126,6 +126,14 @@ export function MemorialView() {
     };
   }, [pendingPetId]);
 
+  function handleDeleted(deletedId: number) {
+    const remaining = memorials.filter((m) => m.petId !== deletedId);
+    setMemorials(remaining);
+    setSelectedId(remaining[0]?.petId ?? null);
+    setDetail(null);
+    toast('추모 공간을 삭제했어요');
+  }
+
   if (isLoading) return null;
 
   const hasMemorials = memorials.length > 0;
@@ -145,6 +153,7 @@ export function MemorialView() {
           key={selectedId}
           memorial={selectedDetail}
           generationIssue={selectedIssue}
+          onDeleted={handleDeleted}
         />
       )}
     </div>
