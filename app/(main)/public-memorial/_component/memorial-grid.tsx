@@ -18,7 +18,7 @@ export function MemorialGrid({ memorials }: MemorialGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-2 p-3">
+    <div className="flex flex-col divide-y">
       {memorials.map((memorial) => (
         <MemorialGridCard key={memorial.petId} memorial={memorial} />
       ))}
