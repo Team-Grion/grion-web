@@ -1,20 +1,16 @@
-import type { PublicMemorial } from '@/types/memorial';
+import type { PetMemorialPublicTodaySummary } from '@/types/memorial';
 
 interface PublicMemorialHeaderProps {
-  memorials: PublicMemorial[];
+  summary: PetMemorialPublicTodaySummary | null;
 }
 
-export function PublicMemorialHeader({ memorials }: PublicMemorialHeaderProps) {
-  const spacesWithFlowers = memorials.filter((m) => m.recentFlowers > 0);
-  const totalRecentFlowers = spacesWithFlowers.reduce(
-    (sum, m) => sum + m.recentFlowers,
-    0,
-  );
+export function PublicMemorialHeader({ summary }: PublicMemorialHeaderProps) {
+  if (!summary) return null;
 
   return (
     <div className="bg-gr-secondary/60 px-4 py-4">
       <p className="text-gr-primary text-sm font-medium">
-        오늘 {spacesWithFlowers.length}개 공간에 {totalRecentFlowers}송이 꽃이
+        오늘 {summary.memorialCount}개 공간에 {summary.messageCount}송이 꽃이
         놓였어요
       </p>
     </div>

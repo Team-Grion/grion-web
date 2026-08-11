@@ -3,21 +3,23 @@
 import { useState } from 'react';
 
 import { CheckCircle2 } from 'lucide-react';
+import { toast } from 'sonner';
+
+import { sendLetter } from '@/lib/api/memorial';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
+const CONTENT_MAX_LENGTH = 500;
+
 interface SendMessageFormProps {
-  memorialId: string;
+  petId: number;
   userName: string;
 }
 
-export function SendMessageForm({
-  memorialId: _,
-  userName,
-}: SendMessageFormProps) {
+export function SendMessageForm({ petId, userName }: SendMessageFormProps) {
   const [content, setContent] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,10 +28,18 @@ export function SendMessageForm({
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
-    // 실제 전송 시: senderName = isAnonymous ? null : userName
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    setIsDone(true);
+
+    try {
+      await sendLetter(petId, { content, isAnonymous });
+      setIsDone(true);
+    } catch (error) {
+      console.error('[send-letter]', error);
+      toast('쪽지를 보내지 못했어요', {
+        description: '잠시 후 다시 시도해주세요',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   if (isDone) {
@@ -67,6 +77,7 @@ export function SendMessageForm({
         value={content}
         onChange={(e) => setContent(e.target.value)}
         rows={4}
+        maxLength={CONTENT_MAX_LENGTH}
         required
       />
 

@@ -1,9 +1,9 @@
-import type { PublicMemorial } from '@/types/memorial';
+import type { PetMemorialPublicSummary } from '@/types/memorial';
 
 import { MemorialGridCard } from '@/app/(main)/public-memorial/_component/memorial-grid-card';
 
 interface MemorialGridProps {
-  memorials: PublicMemorial[];
+  memorials: PetMemorialPublicSummary[];
 }
 
 export function MemorialGrid({ memorials }: MemorialGridProps) {
@@ -20,7 +20,7 @@ export function MemorialGrid({ memorials }: MemorialGridProps) {
   return (
     <div className="grid grid-cols-3 gap-2 p-3">
       {memorials.map((memorial) => (
-        <MemorialGridCard key={memorial.id} memorial={memorial} />
+        <MemorialGridCard key={memorial.petId} memorial={memorial} />
       ))}
     </div>
   );
