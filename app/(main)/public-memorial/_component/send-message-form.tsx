@@ -31,7 +31,7 @@ export function SendMessageForm({ petId, userName }: SendMessageFormProps) {
     setIsLoading(true);
 
     try {
-      await sendLetter(petId, { content, isAnonymous });
+      await sendLetter(petId, { content: content.trim(), isAnonymous });
       setIsDone(true);
       toast('쪽지를 보냈어요');
     } catch (error) {
@@ -83,7 +83,11 @@ export function SendMessageForm({ petId, userName }: SendMessageFormProps) {
         required
       />
 
-      <Button type="submit" className="w-full" disabled={!content || isLoading}>
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={!content.trim() || isLoading}
+      >
         {isLoading ? '전달 중...' : '쪽지 보내기'}
       </Button>
     </form>
