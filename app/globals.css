@@ -56,24 +56,27 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
+  /* shadcn 기본 회색조 대신 브랜드(gr-) 팔레트에서 파생한 따뜻한 톤을 쓴다.
+     흰/회색 일색으로 밋밋해 보이던 문제 — 페이지 배경, 내비게이션, 카드,
+     구분선까지 전부 이 토큰을 거쳐가므로 여기 하나만 바꿔도 전체에 퍼진다. */
+  --background: #faf9f5;
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
+  --card: #ffffff;
   --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
+  --popover: #ffffff;
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --secondary: #fbf3e3;
+  --secondary-foreground: #5c4830;
+  --muted: #f5efe2;
+  --muted-foreground: #7c6f5c;
+  --accent: #ffefd5;
+  --accent-foreground: #5c4830;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: #eae2d3;
+  --input: #eae2d3;
+  --ring: #d2b48c;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
