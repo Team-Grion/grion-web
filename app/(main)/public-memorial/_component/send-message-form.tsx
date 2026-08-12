@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { describeApiError } from '@/lib/api/error';
 import { sendLetter } from '@/lib/api/memorial';
 
 import { Button } from '@/components/ui/button';
@@ -32,10 +33,11 @@ export function SendMessageForm({ petId, userName }: SendMessageFormProps) {
     try {
       await sendLetter(petId, { content, isAnonymous });
       setIsDone(true);
+      toast('쪽지를 보냈어요');
     } catch (error) {
       console.error('[send-letter]', error);
       toast('쪽지를 보내지 못했어요', {
-        description: '잠시 후 다시 시도해주세요',
+        description: describeApiError(error),
       });
     } finally {
       setIsLoading(false);
