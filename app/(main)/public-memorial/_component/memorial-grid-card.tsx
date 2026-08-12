@@ -32,12 +32,6 @@ export function MemorialGridCard({ memorial }: MemorialGridCardProps) {
             <ImageOff className="size-5" />
           </div>
         )}
-        {memorial.todayMessageCount > 0 && (
-          <span className="absolute top-1.5 left-1.5 flex items-center gap-1 rounded-full border border-white/40 bg-white/25 px-2 py-1 text-[10px] font-semibold text-white shadow-sm backdrop-blur-md">
-            <Flower2 className="size-2.5" />
-            오늘 {memorial.todayMessageCount}
-          </span>
-        )}
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-1">
