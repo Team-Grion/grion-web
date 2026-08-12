@@ -87,7 +87,6 @@ export function FlowerOverlay({ count }: FlowerOverlayProps) {
 
   return (
     <>
-      <div className="from-gr-primary/70 absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t to-transparent" />
       {flowers.map((flower, i) => (
         <span
           key={i}
