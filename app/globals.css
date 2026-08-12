@@ -59,30 +59,31 @@
   /* shadcn 기본 회색조 대신 브랜드(gr-) 팔레트에서 파생한 따뜻한 톤을 쓴다.
      흰/회색 일색으로 밋밋해 보이던 문제 — 페이지 배경, 내비게이션, 카드,
      구분선까지 전부 이 토큰을 거쳐가므로 여기 하나만 바꿔도 전체에 퍼진다. */
-  --background: #faf9f5;
+  --background: #f5efe1;
   --foreground: oklch(0.145 0 0);
-  --card: #ffffff;
+  --card: #fffcf7;
   --card-foreground: oklch(0.145 0 0);
-  --popover: #ffffff;
+  --popover: #fffcf7;
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: #fbf3e3;
   --secondary-foreground: #5c4830;
-  --muted: #f5efe2;
+  --muted: #f0e8d8;
   --muted-foreground: #7c6f5c;
   --accent: #ffefd5;
   --accent-foreground: #5c4830;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #eae2d3;
-  --input: #eae2d3;
+  --border: #e5dac5;
+  --input: #e5dac5;
   --ring: #d2b48c;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  /* 기본값(0.625rem)보다 키워서 전체적으로 더 둥글고 부드러운 인상을 준다 */
+  --radius: 0.875rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
