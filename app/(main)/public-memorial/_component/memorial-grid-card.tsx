@@ -33,8 +33,8 @@ export function MemorialGridCard({ memorial }: MemorialGridCardProps) {
           </div>
         )}
         {memorial.todayMessageCount > 0 && (
-          <span className="bg-gr-primary/80 text-gr-primary-foreground absolute top-1.5 left-1.5 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium">
-            <span className="bg-gr-primary-foreground size-1 rounded-full" />
+          <span className="absolute top-1.5 left-1.5 flex items-center gap-1 rounded-full border border-white/40 bg-white/25 px-2 py-1 text-[10px] font-semibold text-white shadow-sm backdrop-blur-md">
+            <Flower2 className="size-2.5" />
             오늘 {memorial.todayMessageCount}
           </span>
         )}
@@ -61,7 +61,7 @@ export function MemorialGridCard({ memorial }: MemorialGridCardProps) {
                 <Badge
                   key={personality}
                   variant="outline"
-                  className="bg-gr-secondary text-gr-primary border-none"
+                  className="bg-gr-accent/25 text-gr-primary border-gr-accent/40"
                 >
                   {personality}
                 </Badge>
