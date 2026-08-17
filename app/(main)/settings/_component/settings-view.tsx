@@ -41,6 +41,17 @@ export function SettingsView() {
     };
   }, []);
 
+  function handleDeleted(letterId: number) {
+    setUser((prev) =>
+      prev
+        ? {
+            ...prev,
+            letters: prev.letters.filter((l) => l.letterId !== letterId),
+          }
+        : prev,
+    );
+  }
+
   if (isLoading) return null;
 
   return (
@@ -52,7 +63,10 @@ export function SettingsView() {
       >
         <LogoutSection />
       </ProfileSection>
-      <SentMessageList letters={user?.letters ?? []} />
+      <SentMessageList
+        letters={user?.letters ?? []}
+        onDeleted={handleDeleted}
+      />
     </div>
   );
 }
