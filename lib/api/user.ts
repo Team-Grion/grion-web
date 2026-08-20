@@ -14,3 +14,10 @@ export async function getMyPage(): Promise<UserPage> {
   // letters는 비어 있을 수 있고, 아예 오지 않을 수도 있다
   return { ...data, letters: data.letters ?? [] };
 }
+
+/** 내가 쓴 쪽지를 삭제한다. */
+export async function deleteSentLetter(letterId: number): Promise<void> {
+  await apiClient.delete<ApiResponse<unknown>>(
+    `/users/me/letters/${letterId}/delete`,
+  );
+}

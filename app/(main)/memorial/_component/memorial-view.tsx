@@ -159,6 +159,16 @@ export function MemorialView() {
     storeSelection(petId);
   }
 
+  function handleDeleted(deletedId: number) {
+    const remaining = memorials.filter((m) => m.petId !== deletedId);
+    const next = remaining[0]?.petId ?? null;
+    setMemorials(remaining);
+    setSelectedId(next);
+    storeSelection(next);
+    setDetail(null);
+    toast('추모 공간을 삭제했어요');
+  }
+
   if (isLoading) return null;
 
   const hasMemorials = memorials.length > 0;
@@ -178,6 +188,7 @@ export function MemorialView() {
           key={selectedId}
           memorial={selectedDetail}
           generationIssue={selectedIssue}
+          onDeleted={handleDeleted}
         />
       )}
     </div>

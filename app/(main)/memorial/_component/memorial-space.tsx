@@ -4,14 +4,29 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { ImageOff } from 'lucide-react';
+import { ImageOff, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import type { PetMemorialDetail } from '@/types/memorial';
 
-import { updateMemorial, type UpdateMemorialPayload } from '@/lib/api/memorial';
+import {
+  deleteMemorial,
+  updateMemorial,
+  type UpdateMemorialPayload,
+} from '@/lib/api/memorial';
 import { formatDateRange } from '@/lib/utils';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { Switch } from '@/components/ui/switch';
@@ -24,14 +39,17 @@ import { MessageInbox } from '@/app/(main)/memorial/_component/message-inbox';
 interface MemorialSpaceProps {
   memorial: PetMemorialDetail | null;
   generationIssue: GenerationIssue | null;
+  onDeleted?: (petId: number) => void;
 }
 
 export function MemorialSpace({
   memorial,
   generationIssue,
+  onDeleted,
 }: MemorialSpaceProps) {
   const [isPublic, setIsPublic] = useState(memorial?.isPublic ?? false);
   const [content, setContent] = useState(memorial?.content ?? '');
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // 먼저 화면을 바꾸고 저장은 뒤따라간다. 실패하면 이전 값으로 되돌린다.
   async function persist(next: UpdateMemorialPayload, revert: () => void) {
@@ -66,6 +84,23 @@ export function MemorialSpace({
     setContent(next);
 
     void persist({ content: next, isPublic }, () => setContent(previous));
+  }
+
+  async function handleDelete() {
+    if (!memorial) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteMemorial(memorial.petId);
+      onDeleted?.(memorial.petId);
+    } catch (error) {
+      console.error('[memorial-delete]', error);
+      toast('추모 공간을 삭제하지 못했어요', {
+        description: '잠시 후 다시 시도해주세요',
+      });
+    } finally {
+      setIsDeleting(false);
+    }
   }
 
   if (!memorial) {
@@ -165,6 +200,41 @@ export function MemorialSpace({
         </div>
 
         <MessageInbox petId={memorial.petId} count={memorial.letterCount} />
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button
+              type="button"
+              className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive flex items-center justify-between px-4 py-3 text-left transition-colors"
+            >
+              <span className="text-sm">추모 공간 삭제</span>
+              <Trash2 className="size-4" />
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {memorial.petName}의 추모 공간을 삭제할까요?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                삭제하면 되돌릴 수 없어요. 받은 쪽지도 함께 사라져요.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isDeleting}>취소</AlertDialogCancel>
+              <AlertDialogAction
+                variant="destructive"
+                disabled={isDeleting}
+                onClick={(e) => {
+                  e.preventDefault();
+                  void handleDelete();
+                }}
+              >
+                {isDeleting ? '삭제하는 중…' : '삭제'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

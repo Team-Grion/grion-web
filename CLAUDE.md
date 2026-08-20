@@ -154,7 +154,7 @@ import { cn } from '@/lib/utils';
 
 ## 컬러 시스템
 
-시안 기반 따뜻한 크림/브라운 팔레트. `gr-` 접두어로 시맨틱 네이밍 — shadcn 자체 시맨틱 토큰(`--primary`, `--secondary` 등)과는 별도 네임스페이스라 서로 건드리지 않음. `globals.css`에 CSS 변수로 정의.
+시안 기반 따뜻한 크림/브라운 팔레트. `gr-` 접두어로 시맨틱 네이밍. `globals.css`에 CSS 변수로 정의.
 
 | 토큰                            | Hex       | 용도                        |
 | ------------------------------- | --------- | --------------------------- |
@@ -165,6 +165,14 @@ import { cn } from '@/lib/utils';
 | `--color-gr-primary`            | `#5C4830` | 주요 액션(버튼)/강조 텍스트 |
 
 Tailwind에서 `bg-gr-background`, `text-gr-primary` 등으로 사용.
+
+### shadcn 시맨틱 토큰과의 관계
+
+처음엔 `gr-`를 shadcn 시맨틱 토큰(`--background`, `--border`, `--muted` 등)과 별도 네임스페이스로 두고 서로 건드리지 않았는데, 그 결과 내비게이션/카드/구분선처럼 `gr-`를 명시적으로 안 쓴 대부분의 UI가 shadcn 기본 회색조(순백/순회색)로 남아 전체적으로 밋밋해 보이는 문제가 있었다.
+
+그래서 `globals.css`의 `:root`에서 `--background`/`--card`/`--secondary`/`--muted`/`--accent`/`--border`/`--input`/`--ring`을 `gr-` 팔레트에서 파생한 따뜻한 톤으로 재정의했다. `--primary`/`--primary-foreground`는 건드리지 않음 — 브랜드 강조가 필요한 버튼은 이미 `variant="brown"`(`bg-gr-primary`)이 따로 있어서, 기본 `variant="default"`까지 브랜드색으로 바꿀 필요는 없었다.
+
+즉 지금은: `gr-` 토큰 = 명시적으로 브랜드색을 쓰고 싶을 때, shadcn 시맨틱 토큰 = 배경/테두리처럼 어디에나 깔리는 중립색이지만 이제 그 중립색 자체가 브랜드 톤. 새 컴포넌트 만들 때 배경/테두리/muted 텍스트는 별도 `gr-` 클래스 안 붙여도 이미 따뜻한 톤이 적용된다.
 
 ---
 
