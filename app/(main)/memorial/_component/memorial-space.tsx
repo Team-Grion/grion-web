@@ -30,9 +30,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { Switch } from '@/components/ui/switch';
+import { FlowerOverlay } from '@/components/flower-overlay';
 
 import { ContentPlaque } from '@/app/(main)/memorial/_component/content-plaque';
-import { FlowerOverlay } from '@/app/(main)/memorial/_component/flower-overlay';
 import type { GenerationIssue } from '@/app/(main)/memorial/_component/memorial-view';
 import { MessageInbox } from '@/app/(main)/memorial/_component/message-inbox';
 

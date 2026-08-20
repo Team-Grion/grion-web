@@ -62,11 +62,10 @@ export function PersonalitySelector({
         {PERSONALITY_OPTIONS.map((option) => (
           <Toggle
             key={option}
-            variant="outline"
+            variant="pill"
             size="sm"
             pressed={value.includes(option)}
             onPressedChange={() => toggle(option)}
-            className="text-foreground aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary rounded-full px-3"
           >
             {option}
           </Toggle>
@@ -77,11 +76,10 @@ export function PersonalitySelector({
           .map((custom) => (
             <Toggle
               key={custom}
-              variant="outline"
+              variant="pill"
               size="sm"
               pressed
               onPressedChange={() => toggle(custom)}
-              className="text-foreground aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary rounded-full px-3"
             >
               {custom}
             </Toggle>

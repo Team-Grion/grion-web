@@ -11,6 +11,7 @@ import { describeApiError } from '@/lib/api/error';
 import { getMemorialLetters } from '@/lib/api/memorial';
 import { formatSentAt } from '@/lib/utils';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Sheet,
@@ -81,18 +82,30 @@ export function MessageInbox({ petId, count }: MessageInboxProps) {
           {letters ? (
             <ul className="flex flex-col divide-y">
               {letters.map((letter) => (
-                <li key={letter.letterId} className="py-4">
-                  <div className="mb-1 flex items-center justify-between">
-                    <span className="text-sm font-medium">
-                      {letter.senderName}
-                    </span>
-                    <span className="text-muted-foreground text-xs">
-                      {formatSentAt(letter.createdAt)}
-                    </span>
+                <li key={letter.letterId} className="flex gap-3 py-4">
+                  <Avatar className="bg-gr-secondary shrink-0">
+                    <AvatarImage
+                      src="/logo.png"
+                      alt=""
+                      className="object-contain p-1.5"
+                    />
+                    <AvatarFallback className="bg-gr-secondary text-gr-primary font-medium">
+                      {letter.senderName[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-1 flex items-center justify-between">
+                      <span className="text-sm font-medium">
+                        {letter.senderName}
+                      </span>
+                      <span className="text-muted-foreground text-xs">
+                        {formatSentAt(letter.createdAt)}
+                      </span>
+                    </div>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {letter.content}
+                    </p>
                   </div>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {letter.content}
-                  </p>
                 </li>
               ))}
             </ul>

@@ -18,26 +18,37 @@ export interface PetMemorialDetail {
   isPublic: boolean;
 }
 
-export interface MemorialProfile {
-  id: string;
-  petName: string;
-  birthDate: string; // "YYYY-MM-DD"
-  deathDate: string; // "YYYY-MM-DD"
-  userImageUrl: string; // 사용자가 업로드한 반려동물 사진
-  aiImageUrl: string; // AI가 생성한 추모 이미지
-  isPublic: boolean;
-  epitaph?: string; // 한 줄 소개 (최대 40자, 공개 추모 공간에 노출)
-  personalities?: string[]; // 성격 태그
-  memory?: string; // 함께한 추억
+/** GET /memorials/public 응답의 오늘의 통계 */
+export interface PetMemorialPublicTodaySummary {
+  memorialCount: number;
+  messageCount: number;
 }
 
-export type MemorialsResponse = MemorialProfile[] | null;
+/** GET /memorials/public — 목록에는 요약 정보만 내려온다 */
+export interface PetMemorialPublicSummary {
+  petId: number;
+  petName: string;
+  aiImageUrl: string | null;
+  birthDate: string | null; // "YYYY-MM-DD"
+  deathDate: string | null;
+  introduction: string | null; // 한 줄 소개
+  personalities: string[];
+  todayMessageCount: number;
+  totalMessageCount: number;
+}
 
-export interface PublicMemorial extends MemorialProfile {
-  species: 'dog' | 'cat';
-  flowers: number; // 총 꽃 수
-  recentFlowers: number; // 오늘 꽃 수
-  userPhotos?: string[]; // 사용자 업로드 사진들
+/**
+ * GET /memorials/public/{petId}
+ * 목록과 달리 introduction/쪽지 수가 아직 안 내려온다 — 백엔드 확인 필요.
+ */
+export interface PetMemorialPublicDetail {
+  petId: number;
+  petName: string;
+  userName: string;
+  aiImageUrl: string | null;
+  birthDate: string | null;
+  deathDate: string | null;
+  personalities: string[];
 }
 
 /** GET /memorials/me/{petId}/letters */

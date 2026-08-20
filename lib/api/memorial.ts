@@ -2,6 +2,9 @@ import type { ApiResponse } from '@/types/api';
 import type {
   PetLetter,
   PetMemorialDetail,
+  PetMemorialPublicDetail,
+  PetMemorialPublicSummary,
+  PetMemorialPublicTodaySummary,
   PetMemorialSummary,
 } from '@/types/memorial';
 
@@ -141,7 +144,71 @@ export async function updateMemorial(
   );
 }
 
+export type PublicSpecies = 'ALL' | 'DOG' | 'CAT';
+
 /** 추모 공간을 삭제한다(소프트 삭제). 되돌릴 수 없으므로 호출 전 확인 다이얼로그를 거친다. */
 export async function deleteMemorial(petId: number): Promise<void> {
   await apiClient.delete<ApiResponse<unknown>>(`/memorials/me/${petId}/delete`);
+}
+
+interface PetMemorialPublicListResponse {
+  todaySummary: PetMemorialPublicTodaySummary;
+  content: PetMemorialPublicSummary[];
+}
+
+/** 공개 추모 공간 목록. species 생략 시 전체를 내려준다. */
+export async function getPublicMemorials(
+  species: PublicSpecies = 'ALL',
+): Promise<PetMemorialPublicListResponse> {
+  const response = await apiClient.get<
+    ApiResponse<PetMemorialPublicListResponse>
+  >('/memorials/public', { params: { species } });
+
+  const { data, message } = response.data;
+  if (!data) {
+    throw new Error(message ?? '공개 추모 공간을 불러오지 못했어요');
+  }
+  return data;
+}
+
+/** 공개 추모 공간 상세. */
+export async function getPublicMemorialDetail(
+  petId: number,
+): Promise<PetMemorialPublicDetail> {
+  const response = await apiClient.get<ApiResponse<PetMemorialPublicDetail>>(
+    `/memorials/public/${petId}`,
+  );
+
+  const { data, message } = response.data;
+  if (!data) {
+    throw new Error(message ?? '추모 공간을 찾을 수 없어요');
+  }
+  return data;
+}
+
+export interface SendLetterPayload {
+  content: string;
+  isAnonymous: boolean;
+}
+
+interface SendLetterResponse {
+  letterId: number;
+  createdAt?: string;
+}
+
+/** 공개 추모 공간에 쪽지를 남긴다. */
+export async function sendLetter(
+  petId: number,
+  payload: SendLetterPayload,
+): Promise<SendLetterResponse> {
+  const response = await apiClient.post<ApiResponse<SendLetterResponse>>(
+    `/memorials/public/${petId}/letter`,
+    payload,
+  );
+
+  const { data, message } = response.data;
+  if (!data) {
+    throw new Error(message ?? '쪽지를 보내지 못했어요');
+  }
+  return data;
 }
