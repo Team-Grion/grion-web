@@ -18,6 +18,28 @@ import { PetProfileBar } from '@/app/(main)/memorial/_component/pet-profile-bar'
 const POLL_INTERVAL = 2000;
 const POLL_TIMEOUT = 30000;
 
+/**
+ * 공개추모공간·설정 등을 돌아다니다 내 추모공간으로 돌아오면 이 컴포넌트가
+ * 매번 새로 마운트된다 — 마지막으로 보던 반려동물을 세션에 남겨서
+ * 첫 번째 반려동물로 되돌아가지 않게 한다.
+ */
+const SELECTED_PET_STORAGE_KEY = 'grion:memorial-selected-pet-id';
+
+function readStoredSelection(): number | null {
+  if (typeof window === 'undefined') return null;
+  const stored = Number(sessionStorage.getItem(SELECTED_PET_STORAGE_KEY));
+  return Number.isInteger(stored) && stored > 0 ? stored : null;
+}
+
+function storeSelection(petId: number | null): void {
+  if (typeof window === 'undefined') return;
+  if (petId === null) {
+    sessionStorage.removeItem(SELECTED_PET_STORAGE_KEY);
+  } else {
+    sessionStorage.setItem(SELECTED_PET_STORAGE_KEY, String(petId));
+  }
+}
+
 export type GenerationIssue = 'failed' | 'timeout';
 
 export function MemorialView() {
@@ -37,7 +59,13 @@ export function MemorialView() {
       .then((list) => {
         if (isStale) return;
         setMemorials(list);
-        setSelectedId(list[0]?.petId ?? null);
+
+        const stored = readStoredSelection();
+        const next = list.some((m) => m.petId === stored)
+          ? stored
+          : (list[0]?.petId ?? null);
+        setSelectedId(next);
+        storeSelection(next);
       })
       .catch((error) => {
         if (isStale) return;
@@ -126,10 +154,17 @@ export function MemorialView() {
     };
   }, [pendingPetId]);
 
+  function handleSelect(petId: number) {
+    setSelectedId(petId);
+    storeSelection(petId);
+  }
+
   function handleDeleted(deletedId: number) {
     const remaining = memorials.filter((m) => m.petId !== deletedId);
+    const next = remaining[0]?.petId ?? null;
     setMemorials(remaining);
-    setSelectedId(remaining[0]?.petId ?? null);
+    setSelectedId(next);
+    storeSelection(next);
     setDetail(null);
     toast('추모 공간을 삭제했어요');
   }
@@ -145,7 +180,7 @@ export function MemorialView() {
         <PetProfileBar
           memorials={memorials}
           selectedId={selectedId}
-          onSelect={setSelectedId}
+          onSelect={handleSelect}
         />
       )}
       {hasMemorials && !selectedDetail ? null : (
