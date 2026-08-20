@@ -13,6 +13,7 @@ import {
   createMemorial,
   updateMemorial,
 } from '@/lib/api/memorial';
+import { storeMemorialSelection } from '@/lib/memorial-selection';
 import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
@@ -155,6 +156,9 @@ export function CreateMemorialForm() {
         await updateMemorial(petId, { content, isPublic: false });
       }
 
+      // 방금 만든 반려동물이 선택되도록 남긴다 — 안 그러면 /memorial이
+      // 세션에 남아있던 이전 반려동물을 계속 보여준다.
+      storeMemorialSelection(petId);
       router.push('/memorial');
     } catch (error) {
       console.error('[memorial-add]', error);
