@@ -146,6 +146,11 @@ export async function updateMemorial(
 
 export type PublicSpecies = 'ALL' | 'DOG' | 'CAT';
 
+/** 추모 공간을 삭제한다(소프트 삭제). 되돌릴 수 없으므로 호출 전 확인 다이얼로그를 거친다. */
+export async function deleteMemorial(petId: number): Promise<void> {
+  await apiClient.delete<ApiResponse<unknown>>(`/memorials/me/${petId}/delete`);
+}
+
 interface PetMemorialPublicListResponse {
   todaySummary: PetMemorialPublicTodaySummary;
   content: PetMemorialPublicSummary[];
