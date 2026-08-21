@@ -41,3 +41,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# skills CLI
+/.agents
+skills-lock.json
+
+# personal working notes
+/notes
+
