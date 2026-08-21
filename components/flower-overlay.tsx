@@ -11,6 +11,7 @@ interface ChrysanthemumProps {
 function WhiteChrysanthemum({ warm }: ChrysanthemumProps) {
   const outerPetals = Array.from({ length: 16 }, (_, i) => i * (360 / 16));
   const innerPetals = Array.from({ length: 12 }, (_, i) => i * (360 / 12) + 15);
+  const corePetals = Array.from({ length: 8 }, (_, i) => i * (360 / 8) + 7);
   const petalFill = warm ? '#fffbf2' : '#ffffff';
 
   return (
@@ -60,8 +61,20 @@ function WhiteChrysanthemum({ warm }: ChrysanthemumProps) {
           opacity="0.85"
         />
       ))}
-      <circle cx="20" cy="20" r="4" fill="#fde047" />
-      <circle cx="20" cy="20" r="2.5" fill="#facc15" />
+      {/* 꽃수술이 노출되면 스티커처럼 보여서, 중심까지 꽃잎으로 덮는다 */}
+      {corePetals.map((angle, i) => (
+        <ellipse
+          key={`c-${i}`}
+          cx="20"
+          cy="16"
+          rx="1.3"
+          ry="4.5"
+          fill={petalFill}
+          stroke="#d1d5db"
+          strokeWidth="0.3"
+          transform={`rotate(${angle} 20 20)`}
+        />
+      ))}
     </svg>
   );
 }

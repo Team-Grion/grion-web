@@ -23,12 +23,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" suppressHydrationWarning>
-      <body
-        className={`${pretendard.variable} ${geistMono.variable} antialiased`}
-      >
-        <div className="bg-muted flex min-h-dvh justify-center">
-          <main className="w-full max-w-150 shadow-lg">{children}</main>
+    <html
+      lang="ko"
+      className={`${pretendard.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="antialiased">
+        <div className="flex min-h-dvh justify-center bg-[#FAF7EE]">
+          <main className="bg-muted w-full max-w-150 shadow-lg">
+            {children}
+          </main>
         </div>
         <Toaster position="bottom-center" offset={80} />
       </body>
