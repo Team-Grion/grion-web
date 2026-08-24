@@ -151,6 +151,40 @@ export async function deleteMemorial(petId: number): Promise<void> {
   await apiClient.delete<ApiResponse<unknown>>(`/memorials/me/${petId}/delete`);
 }
 
+interface UpdatePetInfoResponse {
+  petId: number;
+  species: string;
+  breed: string;
+  personalities: string[];
+  background?: string;
+  // 아무 필드도 안 바뀌었으면(=재생성 안 함) null로 온다
+  imageStatus: MemorialStatus | null;
+}
+
+/**
+ * 새 사진으로 AI 이미지를 다시 만든다. 품종/성격/배경은 그대로 두고
+ * 사진만 바꾼다 — 지금은 그 값들을 조회할 방법이 없어(상세 응답에
+ * 없음) 프론트에서 미리 채워 보여줄 수 없다.
+ */
+export async function regenerateMemorialImage(
+  petId: number,
+  petPhoto: File,
+): Promise<UpdatePetInfoResponse> {
+  const formData = new FormData();
+  formData.append('petImageUrl', petPhoto);
+
+  const response = await apiClient.patch<ApiResponse<UpdatePetInfoResponse>>(
+    `/memorials/me/${petId}/info`,
+    formData,
+  );
+
+  const { data, message } = response.data;
+  if (!data) {
+    throw new Error(message ?? '이미지를 다시 만들지 못했어요');
+  }
+  return data;
+}
+
 interface PetMemorialPublicListResponse {
   todaySummary: PetMemorialPublicTodaySummary;
   content: PetMemorialPublicSummary[];

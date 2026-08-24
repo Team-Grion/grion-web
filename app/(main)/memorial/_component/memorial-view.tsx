@@ -141,6 +141,13 @@ export function MemorialView() {
     storeMemorialSelection(petId);
   }
 
+  function handleImageRegenerating() {
+    // aiImageUrl을 비우면 pendingPetId가 다시 이 petId를 가리켜서,
+    // 생성 때 쓰던 폴링 로직을 그대로 재사용하게 된다.
+    setDetail((prev) => (prev ? { ...prev, aiImageUrl: null } : prev));
+    setIssue(null);
+  }
+
   function handleDeleted(deletedId: number) {
     const remaining = memorials.filter((m) => m.petId !== deletedId);
     const next = remaining[0]?.petId ?? null;
@@ -171,6 +178,7 @@ export function MemorialView() {
           memorial={selectedDetail}
           generationIssue={selectedIssue}
           onDeleted={handleDeleted}
+          onRegenerating={handleImageRegenerating}
         />
       )}
     </div>
