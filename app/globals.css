@@ -139,3 +139,15 @@
     @apply font-sans;
   }
 }
+
+/* 안 읽은 쪽지 표시 — 닫힌 봉투/열린 봉투를 번갈아 보여준다 */
+@keyframes envelope-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}

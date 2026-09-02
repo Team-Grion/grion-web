@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 
-import { ChevronRight, MailOpen } from 'lucide-react';
+import { ChevronRight, Mail, MailOpen } from 'lucide-react';
 import { toast } from 'sonner';
 
 import type { PetLetter } from '@/types/memorial';
 
 import { describeApiError } from '@/lib/api/error';
 import { getMemorialLetters } from '@/lib/api/memorial';
+import { hasUnreadLetters, markLettersSeen } from '@/lib/unread-letters';
 import { formatSentAt } from '@/lib/utils';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -22,6 +23,16 @@ import {
 } from '@/components/ui/sheet';
 import { Spinner } from '@/components/ui/spinner';
 
+/** 안 읽은 쪽지가 있을 때 닫힌 봉투/열린 봉투를 번갈아 보여준다 */
+function BlinkingEnvelope() {
+  return (
+    <span className="relative inline-block size-4">
+      <Mail className="text-destructive absolute inset-0 size-4 animate-[envelope-blink_1.6s_ease-in-out_infinite]" />
+      <MailOpen className="text-destructive absolute inset-0 size-4 animate-[envelope-blink_1.6s_ease-in-out_infinite] [animation-delay:-0.8s]" />
+    </span>
+  );
+}
+
 interface MessageInboxProps {
   petId: number;
   count: number;
@@ -30,9 +41,20 @@ interface MessageInboxProps {
 export function MessageInbox({ petId, count }: MessageInboxProps) {
   const [letters, setLetters] = useState<PetLetter[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  // 마운트 시점에 한 번만 읽으면 되는 값이라 effect가 아니라 렌더에서 바로
+  // 구한다 — 이 컴포넌트는 데이터가 이미 로드된 뒤에만 마운트되므로
+  // 하이드레이션 불일치가 날 여지가 없다.
+  const [hasUnread, setHasUnread] = useState(() =>
+    hasUnreadLetters(petId, count),
+  );
 
   // 목록은 쪽지함을 처음 열 때 한 번만 불러온다
   async function handleOpenChange(isOpen: boolean) {
+    // 열 때마다 "지금까지의 쪽지는 확인했다"로 취급해 깜빡임을 멈춘다
+    if (isOpen) {
+      markLettersSeen(petId, count);
+      setHasUnread(false);
+    }
     if (!isOpen || letters || isLoading) return;
 
     setIsLoading(true);
@@ -62,10 +84,14 @@ export function MessageInbox({ petId, count }: MessageInboxProps) {
       <SheetTrigger asChild>
         <button
           type="button"
-          className="hover:bg-muted/50 flex w-full items-center justify-between px-4 py-3 text-left transition-colors"
+          className="hover:bg-muted/50 flex w-full cursor-pointer items-center justify-between px-4 py-3 text-left transition-colors"
         >
           <div className="flex items-center gap-2">
-            <MailOpen className="text-muted-foreground size-4" />
+            {hasUnread ? (
+              <BlinkingEnvelope />
+            ) : (
+              <MailOpen className="text-muted-foreground size-4" />
+            )}
             <span className="text-sm font-medium">받은 쪽지 {count}개</span>
           </div>
           <ChevronRight className="text-muted-foreground size-4" />
@@ -73,12 +99,12 @@ export function MessageInbox({ petId, count }: MessageInboxProps) {
       </SheetTrigger>
       <SheetContent
         side="bottom"
-        className="max-h-[70dvh] rounded-t-2xl px-0 pb-0 data-[side=bottom]:right-auto data-[side=bottom]:left-1/2 data-[side=bottom]:w-full data-[side=bottom]:max-w-150 data-[side=bottom]:-translate-x-1/2"
+        className="rounded-t-2xl px-0 pb-0 data-[side=bottom]:right-auto data-[side=bottom]:left-1/2 data-[side=bottom]:h-[50dvh]! data-[side=bottom]:w-full data-[side=bottom]:max-w-150 data-[side=bottom]:-translate-x-1/2"
       >
         <SheetHeader className="px-5 pb-2">
           <SheetTitle>받은 쪽지함 ({count})</SheetTitle>
         </SheetHeader>
-        <ScrollArea className="h-full px-5 pb-8">
+        <ScrollArea className="min-h-0 flex-1 px-5 pb-8">
           {letters ? (
             <ul className="flex flex-col divide-y">
               {letters.map((letter) => (

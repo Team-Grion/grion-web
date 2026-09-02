@@ -89,7 +89,7 @@ export function PersonalitySelector({
           type="button"
           onClick={handleCustomToggle}
           className={cn(
-            'rounded-full border px-3 py-1 text-sm transition-colors',
+            'cursor-pointer rounded-full border px-3 py-1 text-sm transition-colors',
             showCustomInput
               ? 'border-gr-primary bg-gr-primary/8 text-gr-primary'
               : 'border-border text-muted-foreground hover:border-gr-accent/60',
@@ -115,7 +115,7 @@ export function PersonalitySelector({
             type="button"
             onClick={addCustomTag}
             disabled={!customText.trim()}
-            className="bg-gr-primary text-gr-primary-foreground rounded-md px-3 py-1.5 text-sm disabled:opacity-40"
+            className="bg-gr-primary text-gr-primary-foreground cursor-pointer rounded-md px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-40"
           >
             추가
           </button>

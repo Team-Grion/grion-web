@@ -83,7 +83,7 @@ export function OnboardingCarousel() {
             onClick={() => api?.scrollTo(i)}
             aria-label={`${i + 1}번째 슬라이드`}
             className={cn(
-              'h-1.5 rounded-full transition-all duration-300',
+              'h-1.5 cursor-pointer rounded-full transition-all duration-300',
               i === current ? 'bg-gr-primary w-5' : 'bg-gr-accent/40 w-1.5',
             )}
           />

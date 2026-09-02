@@ -33,7 +33,7 @@ export function LogoutSection() {
         <button
           type="button"
           aria-label="로그아웃"
-          className="text-muted-foreground hover:bg-muted hover:text-destructive shrink-0 rounded-full p-2 transition-colors"
+          className="text-muted-foreground hover:bg-muted hover:text-destructive shrink-0 cursor-pointer rounded-full p-2 transition-colors"
         >
           <LogOut className="size-4" />
         </button>

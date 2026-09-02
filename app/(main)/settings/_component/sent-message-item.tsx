@@ -63,7 +63,7 @@ export function SentMessageItem({ letter, onDeleted }: SentMessageItemProps) {
       <SheetTrigger asChild>
         <button
           type="button"
-          className="hover:bg-muted/50 flex w-full items-center gap-3 px-6 py-3 text-left transition-colors"
+          className="hover:bg-muted/50 flex w-full cursor-pointer items-center gap-3 px-6 py-3 text-left transition-colors"
         >
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">

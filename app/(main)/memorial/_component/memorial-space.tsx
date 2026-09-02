@@ -184,7 +184,7 @@ export function MemorialSpace({
         isPublic={isPublic}
       />
 
-      <div className="mt-2 flex w-full max-w-sm flex-col divide-y overflow-hidden rounded-xl border">
+      <div className="bg-background mt-2 flex w-full max-w-sm flex-col divide-y overflow-hidden rounded-xl border">
         <div className="flex items-center justify-between px-4 py-3">
           <div>
             <p className="text-sm font-medium">
@@ -205,7 +205,7 @@ export function MemorialSpace({
           <AlertDialogTrigger asChild>
             <button
               type="button"
-              className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive flex items-center justify-between px-4 py-3 text-left transition-colors"
+              className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive flex cursor-pointer items-center justify-between px-4 py-3 text-left transition-colors"
             >
               <span className="text-sm">추모 공간 삭제</span>
               <Trash2 className="size-4" />
