@@ -9,6 +9,7 @@ import type { PetMemorialPublicDetail } from '@/types/memorial';
 
 import { getPublicMemorialDetail } from '@/lib/api/memorial';
 import { getMyPage } from '@/lib/api/user';
+import { hasAccessToken } from '@/lib/auth/token';
 import { formatDateRange } from '@/lib/utils';
 
 import { SendMessageForm } from '@/app/(main)/public-memorial/_component/send-message-form';
@@ -22,6 +23,9 @@ export function PublicMemorialDetail({ petId }: PublicMemorialDetailProps) {
     null,
   );
   const [userName, setUserName] = useState('사용자');
+  // 로그인 여부는 마운트 시점에 한 번만 읽으면 되는 값이라 effect가 아니라
+  // 렌더에서 바로 구한다.
+  const [isLoggedIn] = useState(hasAccessToken);
   const [hasError, setHasError] = useState(false);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
@@ -47,6 +51,9 @@ export function PublicMemorialDetail({ petId }: PublicMemorialDetailProps) {
   }, [petId]);
 
   useEffect(() => {
+    // 로그인 안 한 방문객은 애초에 호출하지 않는다 — 익명으로만 보낼 수 있다
+    if (!isLoggedIn) return;
+
     let isStale = false;
 
     // 실패해도 쪽지는 보낼 수 있어야 하니 기본값('사용자')으로 계속 진행한다
@@ -61,7 +68,7 @@ export function PublicMemorialDetail({ petId }: PublicMemorialDetailProps) {
     return () => {
       isStale = true;
     };
-  }, []);
+  }, [isLoggedIn]);
 
   if (!hasLoadedOnce) return null;
 
@@ -104,7 +111,11 @@ export function PublicMemorialDetail({ petId }: PublicMemorialDetailProps) {
 
       <div className="border-t pt-6">
         <h2 className="mb-4 font-medium">쪽지 보내기</h2>
-        <SendMessageForm petId={petId} userName={userName} />
+        <SendMessageForm
+          petId={petId}
+          userName={userName}
+          isLoggedIn={isLoggedIn}
+        />
       </div>
     </div>
   );

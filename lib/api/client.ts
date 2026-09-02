@@ -22,7 +22,10 @@ apiClient.interceptors.response.use(
   (error: AxiosError) => {
     // 서버에 토큰 재발급 엔드포인트가 아직 없으므로 만료 시 재로그인만 유도한다.
     // (access 30일 / refresh 60일이라 당장 만료가 잦지는 않다)
-    if (error.response?.status === 401 && typeof window !== 'undefined') {
+    // 로그인 자체를 안 한 상태의 401(공개 추모 공간 등 비로그인 접근)은
+    // 세션 만료가 아니므로 강제 이동시키지 않는다.
+    const hadToken = typeof window !== 'undefined' && !!getAccessToken();
+    if (error.response?.status === 401 && hadToken) {
       clearTokens();
       window.location.replace(LOGIN_PATH);
     }

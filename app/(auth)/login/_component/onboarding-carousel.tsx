@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
 
@@ -46,12 +47,12 @@ export function OnboardingCarousel() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="flex justify-end px-4 pt-4">
-        <button
-          onClick={() => api?.scrollTo(SLIDES.length - 1)}
+        <Link
+          href="/public-memorial"
           className="text-muted-foreground px-2 py-1.5 text-sm"
         >
           건너뛰기
-        </button>
+        </Link>
       </div>
 
       <Carousel setApi={setApi} className="flex-1">
