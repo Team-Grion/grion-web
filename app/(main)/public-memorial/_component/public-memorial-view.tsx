@@ -62,7 +62,7 @@ export function PublicMemorialView() {
     <div>
       <PublicMemorialHeader summary={todaySummary} />
       <SpeciesFilter value={species} onChange={setSpecies} />
-      <MemorialGrid memorials={memorials} />
+      <MemorialGrid memorials={memorials} hasActiveFilter={species !== 'all'} />
     </div>
   );
 }

@@ -18,20 +18,31 @@ const CONTENT_MAX_LENGTH = 500;
 interface SendMessageFormProps {
   petId: number;
   userName: string;
+  isLoggedIn: boolean;
 }
 
-export function SendMessageForm({ petId, userName }: SendMessageFormProps) {
+export function SendMessageForm({
+  petId,
+  userName,
+  isLoggedIn,
+}: SendMessageFormProps) {
   const [content, setContent] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDone, setIsDone] = useState(false);
+
+  // 로그인하지 않았으면 밝힐 신원이 없으니 무조건 익명이다
+  const sendAsAnonymous = !isLoggedIn || isAnonymous;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      await sendLetter(petId, { content: content.trim(), isAnonymous });
+      await sendLetter(petId, {
+        content: content.trim(),
+        isAnonymous: sendAsAnonymous,
+      });
       setIsDone(true);
       toast('쪽지를 보냈어요');
     } catch (error) {
@@ -62,16 +73,18 @@ export function SendMessageForm({ petId, userName }: SendMessageFormProps) {
         <p className="text-muted-foreground text-sm">
           보내는 사람:{' '}
           <span className="text-foreground font-medium">
-            {isAnonymous ? '익명' : userName}
+            {sendAsAnonymous ? '익명' : userName}
           </span>
         </p>
-        <label className="flex cursor-pointer items-center gap-1.5">
-          <Checkbox
-            checked={isAnonymous}
-            onCheckedChange={(checked) => setIsAnonymous(checked === true)}
-          />
-          <Label className="cursor-pointer text-xs">익명으로 보내기</Label>
-        </label>
+        {isLoggedIn && (
+          <label className="flex cursor-pointer items-center gap-1.5">
+            <Checkbox
+              checked={isAnonymous}
+              onCheckedChange={(checked) => setIsAnonymous(checked === true)}
+            />
+            <Label className="cursor-pointer text-xs">익명으로 보내기</Label>
+          </label>
+        )}
       </div>
 
       <Textarea

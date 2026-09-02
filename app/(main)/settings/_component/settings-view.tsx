@@ -8,6 +8,9 @@ import type { UserPage } from '@/types/memorial';
 
 import { describeApiError } from '@/lib/api/error';
 import { getMyPage } from '@/lib/api/user';
+import { hasAccessToken } from '@/lib/auth/token';
+
+import { LoginRequiredState } from '@/components/login-required-state';
 
 import { LogoutSection } from '@/app/(main)/settings/_component/logout-section';
 import { ProfileSection } from '@/app/(main)/settings/_component/profile-section';
@@ -15,9 +18,14 @@ import { SentMessageList } from '@/app/(main)/settings/_component/sent-message-l
 
 export function SettingsView() {
   const [user, setUser] = useState<UserPage | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // 로그인 여부는 마운트 시점에 한 번만 읽으면 되는 값이라 effect가 아니라
+  // 렌더에서 바로 구한다 — 로딩 상태도 그 값에 맞춰 초기화한다.
+  const [isLoggedIn] = useState(hasAccessToken);
+  const [isLoading, setIsLoading] = useState(isLoggedIn);
 
   useEffect(() => {
+    if (!isLoggedIn) return;
+
     let isStale = false;
 
     getMyPage()
@@ -39,7 +47,7 @@ export function SettingsView() {
     return () => {
       isStale = true;
     };
-  }, []);
+  }, [isLoggedIn]);
 
   function handleDeleted(letterId: number) {
     setUser((prev) =>
@@ -53,6 +61,15 @@ export function SettingsView() {
   }
 
   if (isLoading) return null;
+
+  if (!isLoggedIn) {
+    return (
+      <LoginRequiredState
+        title="로그인하고 내 정보를 확인해보세요"
+        description="보낸 쪽지와 프로필을 한눈에 볼 수 있어요"
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col divide-y">

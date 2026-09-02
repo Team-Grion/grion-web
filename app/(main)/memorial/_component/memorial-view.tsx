@@ -11,10 +11,13 @@ import {
   getMemorialStatus,
   getMyMemorials,
 } from '@/lib/api/memorial';
+import { hasAccessToken } from '@/lib/auth/token';
 import {
   readStoredMemorialSelection,
   storeMemorialSelection,
 } from '@/lib/memorial-selection';
+
+import { LoginRequiredState } from '@/components/login-required-state';
 
 import { MemorialSpace } from '@/app/(main)/memorial/_component/memorial-space';
 import { PetProfileBar } from '@/app/(main)/memorial/_component/pet-profile-bar';
@@ -28,13 +31,18 @@ export function MemorialView() {
   const [memorials, setMemorials] = useState<PetMemorialSummary[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<PetMemorialDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // 로그인 여부는 마운트 시점에 한 번만 읽으면 되는 값이라 effect가 아니라
+  // 렌더에서 바로 구한다 — 로딩 상태도 그 값에 맞춰 초기화한다.
+  const [isLoggedIn] = useState(hasAccessToken);
+  const [isLoading, setIsLoading] = useState(isLoggedIn);
   const [issue, setIssue] = useState<{
     petId: number;
     kind: GenerationIssue;
   } | null>(null);
 
   useEffect(() => {
+    if (!isLoggedIn) return;
+
     let isStale = false;
 
     getMyMemorials()
@@ -64,7 +72,7 @@ export function MemorialView() {
     return () => {
       isStale = true;
     };
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (selectedId === null) return;
@@ -152,6 +160,15 @@ export function MemorialView() {
   }
 
   if (isLoading) return null;
+
+  if (!isLoggedIn) {
+    return (
+      <LoginRequiredState
+        title="로그인하고 추모 공간을 만들어보세요"
+        description="카카오로 로그인하면 반려동물과의 기억을 오래 간직할 수 있어요"
+      />
+    );
+  }
 
   const hasMemorials = memorials.length > 0;
   const selectedIssue = issue?.petId === selectedId ? issue.kind : null;

@@ -15,6 +15,10 @@ export function getAccessToken(): string | null {
   return getCookie(ACCESS_TOKEN_COOKIE);
 }
 
+export function hasAccessToken(): boolean {
+  return getAccessToken() !== null;
+}
+
 export function getRefreshToken(): string | null {
   return getCookie(REFRESH_TOKEN_COOKIE);
 }
