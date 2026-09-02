@@ -25,6 +25,9 @@ import { PetProfileBar } from '@/app/(main)/memorial/_component/pet-profile-bar'
 const POLL_INTERVAL = 2000;
 const POLL_TIMEOUT = 30000;
 
+/** 계정당 만들 수 있는 추모 공간 최대 개수 — 서버도 동일하게 제한한다 */
+const MAX_MEMORIALS = 10;
+
 export type GenerationIssue = 'failed' | 'timeout';
 
 export function MemorialView() {
@@ -180,6 +183,8 @@ export function MemorialView() {
           memorials={memorials}
           selectedId={selectedId}
           onSelect={handleSelect}
+          canCreateMore={memorials.length < MAX_MEMORIALS}
+          maxMemorials={MAX_MEMORIALS}
         />
       )}
       {hasMemorials && !selectedDetail ? null : (
