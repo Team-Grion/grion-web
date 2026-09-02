@@ -31,13 +31,13 @@ export function BottomNav() {
               href={href}
               onClick={createGuardedClickHandler(href)}
               className={cn(
-                'flex flex-col items-center gap-1 px-3 py-1 text-xs font-medium transition-colors',
+                'flex flex-col items-center gap-1 px-3 py-1 text-xs transition-colors',
                 isActive
-                  ? 'text-gr-primary'
-                  : 'text-muted-foreground hover:text-foreground',
+                  ? 'text-gr-primary font-semibold'
+                  : 'text-muted-foreground hover:text-foreground font-medium',
               )}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-5 w-5" strokeWidth={isActive ? 2.3 : 2} />
               <span>{label}</span>
             </Link>
           );

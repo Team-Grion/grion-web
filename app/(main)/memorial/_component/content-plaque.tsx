@@ -57,7 +57,7 @@ export function ContentPlaque({
           type="button"
           onClick={save}
           aria-label="저장"
-          className="text-gr-primary hover:bg-gr-secondary/60 shrink-0 rounded-full p-1.5"
+          className="text-gr-primary hover:bg-gr-secondary/60 shrink-0 cursor-pointer rounded-full p-1.5"
         >
           <Check className="size-3.5" />
         </button>
@@ -65,7 +65,7 @@ export function ContentPlaque({
           type="button"
           onClick={cancel}
           aria-label="취소"
-          className="text-muted-foreground hover:bg-muted shrink-0 rounded-full p-1.5"
+          className="text-muted-foreground hover:bg-muted shrink-0 cursor-pointer rounded-full p-1.5"
         >
           <X className="size-3.5" />
         </button>
@@ -79,7 +79,7 @@ export function ContentPlaque({
         type="button"
         onClick={startEdit}
         className={cn(
-          'text-gr-primary/80 flex max-w-full items-center gap-2',
+          'text-gr-primary/80 flex max-w-full cursor-pointer items-center gap-2',
           !isPublic && 'opacity-50',
         )}
       >
@@ -96,7 +96,7 @@ export function ContentPlaque({
       type="button"
       onClick={startEdit}
       className={cn(
-        'text-muted-foreground flex items-center gap-1 text-xs',
+        'text-muted-foreground flex cursor-pointer items-center gap-1 text-xs',
         !isPublic && 'opacity-60',
       )}
     >

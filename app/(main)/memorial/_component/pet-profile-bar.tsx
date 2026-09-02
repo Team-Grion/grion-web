@@ -37,7 +37,7 @@ export function PetProfileBar({
           <button
             key={memorial.petId}
             onClick={() => onSelect(memorial.petId)}
-            className="flex shrink-0 flex-col items-center gap-1.5"
+            className="flex shrink-0 cursor-pointer flex-col items-center gap-1.5"
           >
             <Avatar
               className={cn(
