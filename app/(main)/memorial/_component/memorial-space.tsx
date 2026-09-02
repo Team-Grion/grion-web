@@ -35,17 +35,20 @@ import { FlowerOverlay } from '@/components/flower-overlay';
 import { ContentPlaque } from '@/app/(main)/memorial/_component/content-plaque';
 import type { GenerationIssue } from '@/app/(main)/memorial/_component/memorial-view';
 import { MessageInbox } from '@/app/(main)/memorial/_component/message-inbox';
+import { RegeneratePhotoSheet } from '@/app/(main)/memorial/_component/regenerate-photo-sheet';
 
 interface MemorialSpaceProps {
   memorial: PetMemorialDetail | null;
   generationIssue: GenerationIssue | null;
   onDeleted?: (petId: number) => void;
+  onRegenerating?: () => void;
 }
 
 export function MemorialSpace({
   memorial,
   generationIssue,
   onDeleted,
+  onRegenerating,
 }: MemorialSpaceProps) {
   const [isPublic, setIsPublic] = useState(memorial?.isPublic ?? false);
   const [content, setContent] = useState(memorial?.content ?? '');
@@ -200,6 +203,13 @@ export function MemorialSpace({
         </div>
 
         <MessageInbox petId={memorial.petId} count={memorial.letterCount} />
+
+        {onRegenerating && (
+          <RegeneratePhotoSheet
+            petId={memorial.petId}
+            onRegenerating={onRegenerating}
+          />
+        )}
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
