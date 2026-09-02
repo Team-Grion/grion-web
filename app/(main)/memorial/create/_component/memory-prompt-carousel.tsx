@@ -40,7 +40,7 @@ export function MemoryPromptCarousel({ onSelect }: MemoryPromptCarouselProps) {
           key={i}
           type="button"
           onClick={() => onSelect(prompt)}
-          className="border-border/60 bg-gr-secondary/40 hover:bg-gr-secondary/70 flex w-44 shrink-0 items-start rounded-xl border p-3 text-left text-sm leading-snug transition-colors"
+          className="border-border/60 bg-gr-secondary/40 hover:bg-gr-secondary/70 flex w-44 shrink-0 cursor-pointer items-start rounded-xl border p-3 text-left text-sm leading-snug transition-colors"
         >
           {prompt}
         </button>

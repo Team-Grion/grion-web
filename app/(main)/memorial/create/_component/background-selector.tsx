@@ -53,7 +53,7 @@ export function BackgroundSelector({
         <button
           type="button"
           onClick={handleCustomSelect}
-          className="flex shrink-0 flex-col items-center gap-1.5"
+          className="flex shrink-0 cursor-pointer flex-col items-center gap-1.5"
         >
           <div
             className={cn(
@@ -89,7 +89,7 @@ export function BackgroundSelector({
               key={bg.id}
               type="button"
               onClick={() => handleSelect(bg.id)}
-              className="flex shrink-0 flex-col items-center gap-1.5"
+              className="flex shrink-0 cursor-pointer flex-col items-center gap-1.5"
             >
               <div
                 className={cn(

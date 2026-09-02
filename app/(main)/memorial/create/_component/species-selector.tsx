@@ -29,7 +29,7 @@ export function SpeciesSelector({
             type="button"
             onClick={() => onChange(option.value)}
             className={cn(
-              'flex flex-1 items-center justify-center gap-2 rounded-xl border py-3 text-sm font-medium transition-colors',
+              'flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border py-3 text-sm font-medium transition-colors',
               value === option.value
                 ? 'border-gr-primary bg-gr-primary/8 text-gr-primary'
                 : 'border-border text-muted-foreground hover:border-gr-accent/60',
