@@ -3,6 +3,7 @@
 import Link from 'next/link';
 
 import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
 
 import type { PetMemorialSummary } from '@/types/memorial';
 
@@ -14,12 +15,16 @@ interface PetProfileBarProps {
   memorials: PetMemorialSummary[];
   selectedId: number | null;
   onSelect: (petId: number) => void;
+  canCreateMore: boolean;
+  maxMemorials: number;
 }
 
 export function PetProfileBar({
   memorials,
   selectedId,
   onSelect,
+  canCreateMore,
+  maxMemorials,
 }: PetProfileBarProps) {
   return (
     <div className="bg-background flex items-center gap-4 overflow-x-auto border-b px-4 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -73,15 +78,34 @@ export function PetProfileBar({
         );
       })}
 
-      <Link
-        href="/memorial/create"
-        className="flex shrink-0 flex-col items-center gap-1.5"
-      >
-        <div className="border-muted-foreground/40 flex size-16 items-center justify-center rounded-full border-2 border-dashed">
-          <Plus className="text-muted-foreground/60 size-5" />
-        </div>
-        <span className="text-muted-foreground text-xs">추가</span>
-      </Link>
+      {canCreateMore ? (
+        <Link
+          href="/memorial/create"
+          className="flex shrink-0 flex-col items-center gap-1.5"
+        >
+          <div className="border-muted-foreground/40 flex size-16 items-center justify-center rounded-full border-2 border-dashed">
+            <Plus className="text-muted-foreground/60 size-5" />
+          </div>
+          <span className="text-muted-foreground text-xs">추가</span>
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={() =>
+            toast(`추모 공간은 최대 ${maxMemorials}개까지 만들 수 있어요`, {
+              description: '기존 공간을 정리하고 다시 시도해주세요',
+            })
+          }
+          className="flex shrink-0 cursor-not-allowed flex-col items-center gap-1.5"
+        >
+          <div className="border-muted-foreground/20 flex size-16 items-center justify-center rounded-full border-2 border-dashed">
+            <Plus className="text-muted-foreground/30 size-5" />
+          </div>
+          <span className="text-muted-foreground/50 text-xs">
+            {memorials.length}/{maxMemorials}
+          </span>
+        </button>
+      )}
     </div>
   );
 }
