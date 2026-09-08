@@ -20,18 +20,22 @@ const SLIDES = [
   {
     title: '다시 만나는 작은 공간',
     body: '떠나보낸 우리 아이를 마음속에 오래 간직할 수 있도록, 그리온이 함께할게요.',
+    image: '/onboarding/intro.png',
   },
   {
     title: '사진으로 다시 그려요',
     body: '함께한 사진을 올리면 AI가 우리 아이를 원하는 모습으로 다시 그려드려요.',
+    image: '/onboarding/ai.png',
   },
   {
     title: '기억을 오래 간직해요',
     body: '우리 아이만을 위한 추모 공간을 만들어, 소중한 기억을 오래 간직할 수 있어요.',
+    image: '/onboarding/memorial.png',
   },
   {
     title: '마음을 나눠요',
     body: '혼자 간직하던 그리움, 이곳에서 같은 마음을 가진 분들과 따뜻하게 공유해보세요.',
+    image: '/onboarding/share.png',
   },
 ];
 
@@ -62,7 +66,11 @@ export function OnboardingCarousel() {
               key={i}
               className="flex items-center justify-center pl-0"
             >
-              <OnboardingSlide title={slide.title} body={slide.body} />
+              <OnboardingSlide
+                title={slide.title}
+                body={slide.body}
+                image={slide.image}
+              />
             </CarouselItem>
           ))}
         </CarouselContent>
