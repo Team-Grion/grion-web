@@ -16,65 +16,68 @@ function WhiteChrysanthemum({ warm }: ChrysanthemumProps) {
 
   return (
     <svg
-      viewBox="0 0 40 54"
-      width="26"
-      height="35"
+      viewBox="0 0 58 46"
+      width="35"
+      height="28"
       className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]"
     >
-      {/* 줄기 — 꽃이 놓인 느낌을 주려면 머리만 있는 것보다 훨씬 자연스럽다 */}
-      <line
-        x1="20"
-        y1="27"
-        x2="20"
-        y2="51"
-        stroke="#7f9c72"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path d="M20 37 Q27 35 28 41 Q21 41.5 20 37" fill="#8caa7c" />
+      {/* 서 있는 꽃이 아니라 헌화처럼 눕혀 놓은 모양 — 줄기가 오른쪽을 향하고 꽃머리가 살짝 들려 있다 */}
+      <g transform="translate(29 23) rotate(-80) translate(-20 -26)">
+        {/* 줄기 — 꽃이 놓인 느낌을 주려면 머리만 있는 것보다 훨씬 자연스럽다 */}
+        <line
+          x1="20"
+          y1="27"
+          x2="20"
+          y2="51"
+          stroke="#7f9c72"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <path d="M20 37 Q27 35 28 41 Q21 41.5 20 37" fill="#8caa7c" />
 
-      {outerPetals.map((angle, i) => (
-        <ellipse
-          key={`o-${i}`}
-          cx="20"
-          cy="10"
-          rx="2"
-          ry="9"
-          fill={petalFill}
-          stroke="#d1d5db"
-          strokeWidth="0.3"
-          transform={`rotate(${angle} 20 20)`}
-          opacity="0.95"
-        />
-      ))}
-      {innerPetals.map((angle, i) => (
-        <ellipse
-          key={`i-${i}`}
-          cx="20"
-          cy="13"
-          rx="1.6"
-          ry="6"
-          fill={petalFill}
-          stroke="#d1d5db"
-          strokeWidth="0.3"
-          transform={`rotate(${angle} 20 20)`}
-          opacity="0.85"
-        />
-      ))}
-      {/* 꽃수술이 노출되면 스티커처럼 보여서, 중심까지 꽃잎으로 덮는다 */}
-      {corePetals.map((angle, i) => (
-        <ellipse
-          key={`c-${i}`}
-          cx="20"
-          cy="16"
-          rx="1.3"
-          ry="4.5"
-          fill={petalFill}
-          stroke="#d1d5db"
-          strokeWidth="0.3"
-          transform={`rotate(${angle} 20 20)`}
-        />
-      ))}
+        {outerPetals.map((angle, i) => (
+          <ellipse
+            key={`o-${i}`}
+            cx="20"
+            cy="10"
+            rx="2"
+            ry="9"
+            fill={petalFill}
+            stroke="#d1d5db"
+            strokeWidth="0.3"
+            transform={`rotate(${angle} 20 20)`}
+            opacity="0.95"
+          />
+        ))}
+        {innerPetals.map((angle, i) => (
+          <ellipse
+            key={`i-${i}`}
+            cx="20"
+            cy="13"
+            rx="1.6"
+            ry="6"
+            fill={petalFill}
+            stroke="#d1d5db"
+            strokeWidth="0.3"
+            transform={`rotate(${angle} 20 20)`}
+            opacity="0.85"
+          />
+        ))}
+        {/* 꽃수술이 노출되면 스티커처럼 보여서, 중심까지 꽃잎으로 덮는다 */}
+        {corePetals.map((angle, i) => (
+          <ellipse
+            key={`c-${i}`}
+            cx="20"
+            cy="16"
+            rx="1.3"
+            ry="4.5"
+            fill={petalFill}
+            stroke="#d1d5db"
+            strokeWidth="0.3"
+            transform={`rotate(${angle} 20 20)`}
+          />
+        ))}
+      </g>
     </svg>
   );
 }
