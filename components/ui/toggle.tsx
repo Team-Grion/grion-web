@@ -13,7 +13,7 @@ const toggleVariants = cva(
       variant: {
         default: "bg-transparent",
         outline: "border border-input bg-transparent shadow-xs hover:bg-muted",
-        pill: "text-foreground rounded-full border border-input bg-transparent shadow-xs hover:bg-muted aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary data-[state=on]:border-gr-primary data-[state=on]:bg-gr-primary/8 data-[state=on]:text-gr-primary",
+        pill: "cursor-pointer text-foreground rounded-full border border-input bg-background shadow-xs hover:bg-background/70 aria-pressed:border-gr-primary aria-pressed:bg-gr-primary/8 aria-pressed:text-gr-primary data-[state=on]:border-gr-primary data-[state=on]:bg-gr-primary/8 data-[state=on]:text-gr-primary",
       },
       size: {
         default:

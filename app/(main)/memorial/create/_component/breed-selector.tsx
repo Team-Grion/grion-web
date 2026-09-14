@@ -48,21 +48,19 @@ export function BreedSelector({
     }
   }
 
-  if (!species) {
-    return (
-      <div className="border-border bg-muted/50 flex h-10 items-center rounded-md border px-3">
-        <span className="text-muted-foreground text-sm">
-          종을 먼저 선택해주세요
-        </span>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-1.5">
-      <Select value={selectValue} onValueChange={handleSelectChange}>
+      <Select
+        value={selectValue}
+        onValueChange={handleSelectChange}
+        disabled={!species}
+      >
         <SelectTrigger aria-invalid={!!error && !selectValue}>
-          <SelectValue placeholder="품종을 선택해주세요" />
+          <SelectValue
+            placeholder={
+              species ? '품종을 선택해주세요' : '종을 먼저 선택해주세요'
+            }
+          />
         </SelectTrigger>
         <SelectContent>
           {breeds.map((breed) => (
