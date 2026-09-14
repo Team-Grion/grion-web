@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { ImageOff, Trash2 } from 'lucide-react';
+import { ImageOff, ImagePlus, PencilLine, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import type { PetMemorialDetail } from '@/types/memorial';
@@ -106,7 +106,7 @@ export function MemorialSpace({
   if (!memorial) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 px-6 py-20 text-center">
-        <Image src="/logo.png" alt="" width={96} height={78} />
+        <ImagePlus className="text-muted-foreground size-6" />
         <div className="flex flex-col gap-1.5">
           <h2 className="text-lg font-semibold">첫 추모 공간을 만들어보세요</h2>
           <p className="text-muted-foreground text-sm">
@@ -124,7 +124,7 @@ export function MemorialSpace({
   if (!memorial.petName) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 px-6 py-20 text-center">
-        <Image src="/logo.png" alt="" width={96} height={78} />
+        <PencilLine className="text-muted-foreground size-6" />
         <div className="flex flex-col gap-1.5">
           <h2 className="text-lg font-semibold">거의 다 왔어요</h2>
           <p className="text-muted-foreground text-sm">

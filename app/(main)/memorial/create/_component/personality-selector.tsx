@@ -2,8 +2,8 @@
 
 import { useRef, useState } from 'react';
 
-import { cn } from '@/lib/utils';
-
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Toggle } from '@/components/ui/toggle';
 
 import { PERSONALITY_OPTIONS } from '@/app/(main)/memorial/create/_component/schema';
@@ -85,23 +85,20 @@ export function PersonalitySelector({
             </Toggle>
           ))}
 
-        <button
-          type="button"
-          onClick={handleCustomToggle}
-          className={cn(
-            'cursor-pointer rounded-full border px-3 py-1 text-sm transition-colors',
-            showCustomInput
-              ? 'border-gr-primary bg-gr-primary/8 text-gr-primary'
-              : 'border-border text-muted-foreground hover:border-gr-accent/60',
-          )}
+        <Toggle
+          variant="pill"
+          size="sm"
+          pressed={showCustomInput}
+          onPressedChange={handleCustomToggle}
+          className="text-muted-foreground"
         >
           {CUSTOM_TAG}
-        </button>
+        </Toggle>
       </div>
 
       {showCustomInput && (
         <div className="flex gap-2">
-          <input
+          <Input
             ref={inputRef}
             type="text"
             value={customText}
@@ -109,16 +106,15 @@ export function PersonalitySelector({
             onKeyDown={handleCustomKeyDown}
             placeholder="성격을 입력하세요 (최대 20자)"
             maxLength={20}
-            className="border-input text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex-1 rounded-md border bg-transparent px-3 py-1.5 text-sm outline-none focus-visible:ring-1"
           />
-          <button
+          <Button
             type="button"
+            variant="brown"
             onClick={addCustomTag}
             disabled={!customText.trim()}
-            className="bg-gr-primary text-gr-primary-foreground cursor-pointer rounded-md px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-40"
           >
             추가
-          </button>
+          </Button>
         </div>
       )}
     </div>

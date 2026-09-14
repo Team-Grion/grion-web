@@ -9,8 +9,8 @@ import type { PetMemorialPublicDetail } from '@/types/memorial';
 
 import { getPublicMemorialDetail } from '@/lib/api/memorial';
 import { getMyPage } from '@/lib/api/user';
-import { hasAccessToken } from '@/lib/auth/token';
 import { formatDateRange } from '@/lib/utils';
+import { useHasAccessToken } from '@/hooks/use-has-access-token';
 
 import { SendMessageForm } from '@/app/(main)/public-memorial/_component/send-message-form';
 
@@ -23,9 +23,7 @@ export function PublicMemorialDetail({ petId }: PublicMemorialDetailProps) {
     null,
   );
   const [userName, setUserName] = useState('사용자');
-  // 로그인 여부는 마운트 시점에 한 번만 읽으면 되는 값이라 effect가 아니라
-  // 렌더에서 바로 구한다.
-  const [isLoggedIn] = useState(hasAccessToken);
+  const isLoggedIn = useHasAccessToken();
   const [hasError, setHasError] = useState(false);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
@@ -114,7 +112,7 @@ export function PublicMemorialDetail({ petId }: PublicMemorialDetailProps) {
         <SendMessageForm
           petId={petId}
           userName={userName}
-          isLoggedIn={isLoggedIn}
+          isLoggedIn={isLoggedIn === true}
         />
       </div>
     </div>

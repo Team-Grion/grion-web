@@ -53,14 +53,14 @@ export function BackgroundSelector({
         <button
           type="button"
           onClick={handleCustomSelect}
-          className="flex shrink-0 cursor-pointer flex-col items-center gap-1.5"
+          className="group flex shrink-0 cursor-pointer flex-col items-center gap-1.5"
         >
           <div
             className={cn(
-              'flex h-20 w-16 items-center justify-center rounded-xl border-2 transition-all',
+              'flex h-20 w-16 items-center justify-center rounded-xl border transition-colors',
               isCustom
-                ? 'border-gr-primary bg-gr-primary/5 shadow-gr-primary/20 shadow-sm'
-                : 'border-muted-foreground/30 border-dashed',
+                ? 'border-gr-primary bg-gr-primary/8'
+                : 'border-muted-foreground/30 bg-background group-hover:bg-background/70 border-dashed',
             )}
           >
             <Pencil
@@ -89,17 +89,17 @@ export function BackgroundSelector({
               key={bg.id}
               type="button"
               onClick={() => handleSelect(bg.id)}
-              className="flex shrink-0 cursor-pointer flex-col items-center gap-1.5"
+              className="group flex shrink-0 cursor-pointer flex-col items-center gap-1.5"
             >
               <div
                 className={cn(
-                  'h-20 w-16 overflow-hidden rounded-xl border-2 transition-all',
+                  'h-20 w-16 overflow-hidden rounded-xl border transition-colors',
                   isSelected
-                    ? 'border-gr-primary shadow-gr-primary/20 shadow-sm'
-                    : 'border-transparent',
+                    ? 'border-gr-primary bg-gr-primary/8'
+                    : 'border-border bg-background group-hover:bg-background/70',
                 )}
               >
-                <div className="bg-gr-secondary/60 flex size-full items-center justify-center text-2xl">
+                <div className="flex size-full items-center justify-center text-2xl">
                   {BG_EMOJI[bg.id]}
                 </div>
               </div>

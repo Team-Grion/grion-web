@@ -32,7 +32,7 @@ export function SpeciesSelector({
               'flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border py-3 text-sm font-medium transition-colors',
               value === option.value
                 ? 'border-gr-primary bg-gr-primary/8 text-gr-primary'
-                : 'border-border text-muted-foreground hover:border-gr-accent/60',
+                : 'border-border bg-background text-muted-foreground hover:bg-background/70 hover:text-foreground',
             )}
           >
             <span>{option.emoji}</span>

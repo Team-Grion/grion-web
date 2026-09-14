@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import { CalendarIcon } from 'lucide-react';
 import { type Matcher } from 'react-day-picker';
 import { ko } from 'react-day-picker/locale';
@@ -40,6 +42,7 @@ export function DatePicker({
   disabled,
   ariaInvalid,
 }: DatePickerProps) {
+  const [open, setOpen] = useState(false);
   const selected = value ? new Date(value) : undefined;
 
   function handleSelect(date: Date | undefined) {
@@ -48,10 +51,11 @@ export function DatePicker({
     const mm = String(date.getMonth() + 1).padStart(2, '0');
     const dd = String(date.getDate()).padStart(2, '0');
     onChange(`${yyyy}-${mm}-${dd}`);
+    setOpen(false);
   }
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           type="button"
