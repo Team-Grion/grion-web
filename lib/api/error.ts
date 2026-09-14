@@ -28,3 +28,13 @@ export function describeApiError(error: unknown): string {
 
   return '잠시 후 다시 시도해주세요';
 }
+
+/**
+ * 서버가 요청 내용을 보고 거절한 경우(4xx)인지 판단한다.
+ * 비방글 차단처럼 사용자에게 사유를 알려주면 끝나는 실패라 에러 로그를 남길 필요가 없다.
+ */
+export function isRejectedByServer(error: unknown): boolean {
+  if (!isAxiosError(error) || !error.response) return false;
+  const { status } = error.response;
+  return status >= 400 && status < 500;
+}

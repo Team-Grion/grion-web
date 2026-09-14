@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { describeApiError } from '@/lib/api/error';
+import { describeApiError, isRejectedByServer } from '@/lib/api/error';
 import { sendLetter } from '@/lib/api/memorial';
 
 import { Button } from '@/components/ui/button';
@@ -46,7 +46,7 @@ export function SendMessageForm({
       setIsDone(true);
       toast('쪽지를 보냈어요');
     } catch (error) {
-      console.error('[send-letter]', error);
+      if (!isRejectedByServer(error)) console.error('[send-letter]', error);
       toast('쪽지를 보내지 못했어요', {
         description: describeApiError(error),
       });
